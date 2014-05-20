@@ -1,0 +1,22 @@
+#asswordk
+#magic string "#asswordk"
+#this magic string must be the first line of the file
+
+mainpassword=HASH SHA512
+#must be the next line
+
+#begining of the info block must be mark with this
+[BEGIN]
+#this pattern can be repeated...
+id=Id for entry (int)
+login= login user (string)
+password= crypt(blowfish) (string)
+url= (string)
+notes= (string)
+...
+[END]
+#Mark ending patterns
+
+
+#this file must be in this directory with this name
+/usr/share/asswordk/

@@ -101,7 +101,7 @@ if (nbl>=max_id){
 std::normal_color();
 //if entries vector is empty then signal to user.
 if (entries->size()==0){
-	cout<<"Liste des entrées vide..."<<endl;
+	cout<<"Entries list is empty..."<<endl;
 }
 
 } //end list function
@@ -136,7 +136,7 @@ if ((unsigned int)id<(entries->size())){
 } else
 {
 	//oops id not right
-	cout<<"Erreur id inexistant..."<<endl;
+	cout<<"Error, id not found..."<<endl;
 }
 
 } //end print function
@@ -157,10 +157,10 @@ std::clrscr();
 color("32");
 cout<<"asswordk version 0.1"<<std::endl;
 normal_color();
-cout<<"Logiciel de gestion de mots de passes"<<std::endl;
+cout<<"Passwords manager application"<<std::endl;
 cout<<"Copyright (c) 2014 Tondeur hervé\nhttp://www.tondeurh.fr"<<std::endl;
 cout<<"Les conditions d'utilisations de ce programme sont définies par les termes de la Licence Publique Générale (GPL) Version 3"<<std::endl;
-cout<<"Commande \"help\" pour obtenir de l'aide..."<<endl;
+cout<<"Type command \"help\" to get helps..."<<endl;
 cout<<std::endl;
 }
 
@@ -187,84 +187,84 @@ void Console::help(string value){
 
 switch (cmd){
 case 1://quit help
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : quit\n"<<std::endl;
+		cout<<"Syntax : quit\n"<<std::endl;
 		normal_color();
-		cout<<"=>permet de quitter l'application.\n"<<std::endl;
+		cout<<"=>Type this command with no parameter to quit this application.\n"<<std::endl;
 		break;
 case 2: //help help
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : help <cmd>\n"<<std::endl;
+		cout<<"Syntax : help <cmd>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Affiche le détail de l'aide sur les commandes.\n<cmd> peut prendre les valeurs suivantes:\n"<<std::endl;
+		cout<<"=>Show details of a help command.\n<cmd> can take one of this values following :\n"<<std::endl;
 		cout<<"list\tnew\tmodify\tdelete\tprint"<<std::endl;
 		cout<<"purge\tclear\thelp\thello\tquit\n"<<std::endl;
-		cout<<"=>si <cmd> est vide, affiche l'aide générale.\n"<<std::endl;
+		cout<<"=>If <cmd> is empty, show general help.\n"<<std::endl;
 		break;
 case 3: //help list
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : list [id]\n"<<std::endl;
+		cout<<"Syntax : list [id]\n"<<std::endl;
 		normal_color();
-		cout<<"=>Affiche la liste des comptes.\n[id] indique le num d'id du début de la liste, si n n'est pas précisé, on affiche toutes les entrées.\n"<<std::endl;
+		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing.\n"<<std::endl;
 		break;
 case 4: //help new
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : new\n"<<std::endl;
+		cout<<"Syntax : new\n"<<std::endl;
 		normal_color();
-		cout<<"=>Créer une nouvelle entrée.\n"<<std::endl;
+		cout<<"=>This command permit to create a new credential entry.\n"<<std::endl;
 		break;
 case 5: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : delete <id>\n"<<std::endl;
+		cout<<"Syntax : delete <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Supprimer une entrée dans la liste des mots de passes, id représente son numéro d'entrée.\n"<<std::endl;
+		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 case 6: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : modify <id>\n"<<std::endl;
+		cout<<"Syntax : modify <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Modifier une entrée dans la liste des mots de passes, id représente son numéro d'entrée.\n"<<std::endl;
+		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 case 7: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : purge\n"<<std::endl;
+		cout<<"Syntax : purge\n"<<std::endl;
 		normal_color();
-		cout<<"=>Supprimer toutes les entrées des mots de passes de la base.\n"<<std::endl;
+		cout<<"=>Delete all entries from credential\n Be carefull evething will be lost.\n"<<std::endl;
 		break;
 case 8: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : clear\n"<<std::endl;
+		cout<<"Syntax : clear\n"<<std::endl;
 		normal_color();
-		cout<<"=>Effacer l'écran.\n"<<std::endl;
+		cout<<"=>Erase screen for confidentiality.\n"<<std::endl;
 		break;
 case 9: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : hello\n"<<std::endl;
+		cout<<"Syntax : hello\n"<<std::endl;
 		normal_color();
-		cout<<"=>Affiche le nom et le copyright de l'application.\n"<<std::endl;
+		cout<<"=>Show application name and copyright.\n"<<std::endl;
 		break;
 case 10: //help delete
-		cout<<"aide commandes\n============================"<<std::endl;
+		cout<<"commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntaxe : print <id>\n"<<std::endl;
+		cout<<"Syntax : print <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Afficher le détail d'une entrée de la liste des mots de passes, id représente son numéro d'entrée.\n"<<std::endl;
+		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 default: //general help
 	cout<<"=================================="<<std::endl;
-	cout<<"Liste des commandes\n"<<std::endl;
+	cout<<"Commands list\n"<<std::endl;
 	cout<<"list\tnew\tmodify\tdelete\tprint"<<std::endl;
 	cout<<"purge\tclear\thelp\thello\tquit\n"<<std::endl;
-	cout<<"détail de chaque commande utilisez : \nhelp <cmd>"<<std::endl;
+	cout<<"To get detail for a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
 }
 
@@ -310,7 +310,7 @@ void Console::run_cmd(int cmdi,string value){
 			print_entry(std::atoi(value.c_str()));
 			break;
 	default:
-			cout<<"Commande inconnue!"<<std::endl;
+			cout<<"Unknow command (type help)!"<<std::endl;
 
 	}
 }
@@ -360,18 +360,23 @@ void Console::cmd_loop(){
 	//open db file...
 	//if file not exist quit this function
 	if (!db->openForReadWrite("/usr/share/asswordk/asswordk.db")){
-	cout<<"Erreur - Fichier base de données absent..."<<endl;
+	cout<<"Error - Database file not found..."<<endl;
 	//propose to create a new one...
-	//TODO
-
-	return;
+	if 	(!create_credential()){
+		return;
+	}
 	}
 
 	//before continuing, user must be loged...
 	if (!identifying()){
-	cout<<"Erreur d'identification... désolé."<<endl;
+	cout<<"Error - you are not correctly identified... sorry."<<endl;
 	delete db; //close the db file... and stop
 	exit(3);
+	} else
+	{//say hello
+		std::color("32");
+		cout<<"Hello - you're welcome!"<<endl;
+		std::normal_color();
 	}
 
 
@@ -412,8 +417,14 @@ bool Console::identifying(){
 if (!identified){
 string temppass;
 	//ask password
-cout<<"Vous devez être identifié pour continuer (mot de passe) ?";
-std::getline(cin,temppass);
+std::color("7"); //inverse video
+cout<<"You must be identified to continue (enter your password follow by enter key) ?";
+std::color("0"); //reset
+//std::color("30"); //black color to hide password=> need a better way to do that
+temppass=std::getpass();
+//std::getline(cin,temppass);
+//std::normal_color(); //reset background and foreground colors.
+std::clrscr(); //clear screen
 
 	//encode it in sha512
 	ABlowfish::awkBlowfish sha;
@@ -421,21 +432,55 @@ std::getline(cin,temppass);
 
 	//read encoded string in database file
 	string readpass;
-	//TODO
+	readpass=db->readValue("mainpassword");
 
 	//if the same return true else send message and return false
-	if (temppass.compare(readpass)==0){
+	if (encoded.compare(readpass)==0){
 		mainpassword=temppass;
 		identified=true;
 		return true;
 	}
 	else
 	{
-		cout<<"mot de passe incorrect..."<<endl;
+		cout<<"This password is not correct..."<<endl;
 		return false;
 	}
 }//end test identified
 return true;
+}
+
+bool Console::create_credential(){
+	string pass1, pass2;
+//ask for a password
+cout<<"Please enter a password for protect your new credentials : (enter a password follow by a enter key)?";
+pass1=std::getpass();
+	//if pass1 is empty stop
+	if (pass1.empty()){
+		cout<<"This password cannot be empty!..."<<endl;
+		return false;
+	}
+
+//confirm it
+cout<<"Please confirm your password : (enter a password follow by a enter key)?";
+pass2=std::getpass();
+	//if pass1!=pass2 stop
+	if (pass1.compare(pass2)!=0){
+	cout<<"Your confirm password is not the same!..."<<endl;
+	return false;
+}
+
+	//hash in sha512 this password
+	ABlowfish::awkBlowfish sha;
+	string encoded=sha.sha(pass1);
+
+
+	//create the dbfile ans save coded password
+	db=new pawk::DBFile();
+	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
+	db->writeHeader(encoded);
+	delete db;
+	//default return...
+	return true;
 }
 
 } /* namespace pawk */

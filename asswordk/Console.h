@@ -29,13 +29,13 @@ namespace pawk {
 
 
 /*!
- * Structure used to represent a entry from the application
- * We create a vector to manage multiple entries
+ * Structure used to represent a entry password for the application
+ * We create a vector later base on this structure to manage multiple entries
  */
 struct struct_entry {
 	std::string login;
 	std::string password;
-	int pwlenght;
+	int pwlenght; //not uses
 	std::string url;
 	std::string notes;
 };
@@ -68,6 +68,7 @@ public:
 	void execute_cmd(std::string cmdl,std::string value); //switch command to execute
 	void run_cmd(int cmdi,std::string value); //distribute command
 	bool identifying(); //ask to identify if not!
+	bool create_credential();//create a new credential
 	virtual ~Console();
 };
 

@@ -134,4 +134,61 @@ void color(const char* param) {
 void normal_color(){printf("\033[0m");} //and also ansi string
 
 
+
+/*!
+ * rewrite getch to change attribute of the termios
+ * @return
+ */
+int getch() {
+    int ch;
+    struct termios t_old, t_new;
+
+    tcgetattr(STDIN_FILENO, &t_old);
+    t_new = t_old;
+    t_new.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_new);
+
+    ch = getchar();
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_old);
+    return ch;
+}
+
+
+/*!
+ * change standard input to star caracter
+ * @return
+ */
+string getpass()
+{
+bool show_asterisk=true;
+  const char BACKSPACE=127;
+  const char RETURN=10;
+
+  string password;
+  unsigned char ch=0;
+
+  while((ch=getch())!=RETURN)
+    {
+       if(ch==BACKSPACE)
+         {
+            if(password.length()!=0)
+              {
+                 if(show_asterisk)
+                 cout <<"\b \b";
+                 password.resize(password.length()-1);
+              }
+         }
+       else
+         {
+             password+=ch;
+             if(show_asterisk)
+                 cout <<'*';
+         }
+    }
+  cout <<endl;
+  return password;
+}
+
+
 } //fin namespace

@@ -22,6 +22,9 @@
 namespace pawk {
 
 
+/*!
+ * constructor of this class do nothing
+ */
 DBFile::DBFile(){/*do nothing*/}
 
 
@@ -31,17 +34,18 @@ DBFile::DBFile(){/*do nothing*/}
  * @return bool if ok
  */
 bool DBFile::openForReadWrite(string pathDB){
+	//open as red/write...
 	dbfile=new fstream(pathDB.c_str(),std::ios::out | std::ios::in);
+	//if failed then return false to indicate to créate one or indicate true if good
 	if (*dbfile){ return true;}
 return false;
 }
 
 
 /*!
- * Create if file exist ans is open
- * if is open test the file format
- * must have in the first line the word
- * "asswordk", without double quotes
+ * if dbfile is open test the file format
+ * must have in is first line the word
+ * "#asswordk", without double quotes
  * @return
  */
 bool DBFile::testFileFormat(){

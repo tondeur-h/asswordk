@@ -27,6 +27,9 @@
 #include <sstream>
 #include <iostream>
 #include <cstdio>
+#include <termios.h>
+#include <unistd.h>
+
 
 
 namespace std {
@@ -42,6 +45,9 @@ void close_scanner(); //just to free memory for scanner function
 void clrscr(); //clear screen
 void normal_color(); //set color to normal color in console...
 void color(const char* param); //change colors caracters into console
+int getch(); //change termios flags
+std::string getpass(); //change input to star caracters
+
 
 /*   param must be a const char *, empty (same as "0") or with
      several values separate with ; among

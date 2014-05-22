@@ -24,14 +24,23 @@
 
 //declare console loop
 pawk::Console* cons;
-
+/*!
+ * Main entry point
+ * A this time, did not accept options line arguments
+ * wait for a future version...
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main (int argc, char* argv[]){
 
-if (argc>1) {/*futur command line options*/}
+if (argc>1) {/*futur command line options not implemented a this time*/}
+
+//don't care about nomber of command line arguments
 if (argc>0)
 {
-	cons=new pawk::Console(); //create console loop object
-	cons->cmd_loop(); //go to loop routine
+	cons=new pawk::Console(); //create console object
+	cons->cmd_loop(); //go to loop routine, this the main loop
 }
 
 //as bye bye, destroy console and quit

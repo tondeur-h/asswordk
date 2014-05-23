@@ -54,7 +54,10 @@ if (!*dbfile){return false;}
 //test file format read first line
 string firstline;
 std::getline(*dbfile,firstline);
-if (firstline.compare("#asswordk")==0){
+
+
+if (firstline.compare("#asswordk")==0 && !readValue("mainpassword").empty())
+{
 return true;
 }
 //default fail return

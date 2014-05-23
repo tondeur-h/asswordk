@@ -141,37 +141,40 @@ void normal_color(){printf("\033[0m");} //and also ansi string
  */
 int getch() {
     int ch;
-    struct termios t_old, t_new;
+    struct termios t_old, t_new; //define 2 termios structures
 
-    tcgetattr(STDIN_FILENO, &t_old);
-    t_new = t_old;
-    t_new.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &t_new);
+    tcgetattr(STDIN_FILENO, &t_old); //get termios attributes from STDIN_FILENO
+    t_new = t_old; //copy it as new
+    t_new.c_lflag &= ~(ICANON | ECHO); //change locals flags
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_new); //apply changes now with new flags
 
-    ch = getchar();
+    ch = getchar(); //get char from user and return it
 
-    tcsetattr(STDIN_FILENO, TCSANOW, &t_old);
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_old); //reset old attributes
     return ch;
 }
 
 
 /*!
- * change standard input to star caracter
+ * change standard input to star caracters
  * @return
  */
 string getpass()
 {
+	//remplace with caracters for futur uses
 bool show_asterisk=true;
+//define specials caracters to know
   const char BACKSPACE=127;
   const char RETURN=10;
 
   string password;
   unsigned char ch=0;
 
+  //loop getting string
   while((ch=getch())!=RETURN)
     {
        if(ch==BACKSPACE)
-         {
+         { //if backspace is needed
             if(password.length()!=0)
               {
                  if(show_asterisk)
@@ -180,7 +183,7 @@ bool show_asterisk=true;
               }
          }
        else
-         {
+         {//make the string password
              password+=ch;
              if(show_asterisk)
                  cout <<'*';

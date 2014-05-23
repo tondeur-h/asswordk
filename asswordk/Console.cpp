@@ -159,7 +159,7 @@ cout<<"asswordk version 0.1"<<std::endl;
 normal_color();
 cout<<"Passwords manager application"<<std::endl;
 cout<<"Copyright (c) 2014 Tondeur hervé\nhttp://www.tondeurh.fr"<<std::endl;
-cout<<"Les conditions d'utilisations de ce programme sont définies par les termes de la Licence Publique Générale (GPL) Version 3"<<std::endl;
+cout<<"the uses terms of this program are defined with General Public Licence (GPL) Version 3"<<std::endl;
 cout<<"Type command \"help\" to get helps..."<<endl;
 cout<<std::endl;
 }
@@ -347,7 +347,6 @@ quit=false; //boolean quit variable for quit prompt loop
 identified=false; //not identified by default
 mainpassword=""; //no main password by default
 entries=new std::vector<struct_entry>(); //create vector for all database
-db=new DBFile(); //create access dbfile
 }
 
 
@@ -358,19 +357,30 @@ void Console::cmd_loop(){
 	string* line; //line to read
 
 	//open db file...
+	db=new DBFile(); //create access dbfile
+
 	//if file not exist quit this function
 	if (!db->openForReadWrite("/usr/share/asswordk/asswordk.db")){
-	cout<<"Error - Database file not found..."<<endl;
-	//propose to create a new one...
-	if 	(!create_credential()){
+		cout<<"Error - Database file not found..."<<endl;
+		cout<<"You must create a databasefile, see documentation..."<<endl;
+		delete db;
 		return;
 	}
+
+	//test if mainpassword and header ok...
+	if (!db->testFileFormat()){
+		cout<<"Credential is empty, create one please..."<<endl;	;
+		delete db;
+
+		//propose to create a new one...
+		if 	(!create_credential()){return;}
 	}
+
 
 	//before continuing, user must be loged...
 	if (!identifying()){
 	cout<<"Error - you are not correctly identified... sorry."<<endl;
-	delete db; //close the db file... and stop
+	//bye bye
 	exit(3);
 	} else
 	{//say hello
@@ -380,9 +390,10 @@ void Console::cmd_loop(){
 	}
 
 
+	db=new DBFile(); //create access dbfile
+	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
 	//read all entries
 	db->readAll(entries);
-
 	//close the dbfile if all is reading...
 	delete db;
 
@@ -431,8 +442,11 @@ std::clrscr(); //clear screen
 	string encoded=sha.sha(temppass);
 
 	//read encoded string in database file
+	db=new pawk::DBFile();
+	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
 	string readpass;
 	readpass=db->readValue("mainpassword");
+	delete db;
 
 	//if the same return true else send message and return false
 	if (encoded.compare(readpass)==0){

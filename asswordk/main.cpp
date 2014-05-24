@@ -24,6 +24,10 @@
 
 //declare console loop
 pawk::Console* cons;
+
+
+
+
 /*!
  * Main entry point
  * A this time, did not accept options line arguments
@@ -44,7 +48,7 @@ if (argc>0)
 }
 
 //as bye bye, destroy console and quit
-delete cons;
-return 0;
+delete cons; //destroy
+return 0; //exit success
 }
 

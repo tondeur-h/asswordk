@@ -46,15 +46,43 @@ namespace pawk {
 DBFile* db; //object dbfile
 
 
+
+
+/*!
+ * convert a ascii number format into a integer value...
+ * @param numascii
+ * @return
+ */
 long int Console::ascii2number(std::string numascii){
+	//return int value stranlated from ascii, if wrong return 0
 return std::strtol(numascii.c_str(),0,10);
 }
 
 
+
+
+/*!
+ *
+ * @param size
+ * @return
+ */
 std::string Console::generate_password (long int size){
 
-	return 0;
+	static const char alphanum[] =
+	"0123456789"
+	"!@#$%^&*"
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	"abcdefghijklmnopqrstuvwxyz";
+
+	int stringLength = sizeof(alphanum) - 1;
+	    srand(time(0));
+	    std::string Str;
+	    for(long int i = 0; i < size; ++i){Str += alphanum[rand() % stringLength];}
+return Str;
 }
+
+
+
 
 /*!
  * Define a new entry into the password database
@@ -88,10 +116,13 @@ string url;
 			cout<<"Longueur du mot de passe ?";
 			getline(cin,pwlenght);
 
-			pwl=(ascii2number(pwlenght)>0);
-			if (!pwl) {cout<<"It's not a number or is value egal 0! retry..."<<endl;}
+			pwl=(ascii2number(pwlenght)>0) & (ascii2number(pwlenght)>=4);
+			if (!pwl) {cout<<"It's not a number or is value is less than  4! retry..."<<endl;}
 			else
-			{password=generate_password(ascii2number(pwlenght));}
+			{
+				password=generate_password(ascii2number(pwlenght));
+				cout<<"The password generated is : "<<password<<endl;
+			}
 		}
 	}
 
@@ -398,6 +429,7 @@ default: //general help
 
 
 
+
 /*!
  * switch routine for select function from commande ask
  * @param cmdi as input int to simplify switch selection
@@ -459,6 +491,12 @@ bool Console::change_password(){
 
 
 
+/*!
+ * test command function
+ * dispatch call functions
+ * @param cmdl
+ * @param value
+ */
 void Console::execute_cmd(string cmdl,string value){
 int cmd;
 
@@ -579,7 +617,7 @@ delete entries; //delete vector for all database...
 
 
 /*!
- *
+ *function that ask to identifying you if needed
  * @return
  */
 bool Console::identifying(){

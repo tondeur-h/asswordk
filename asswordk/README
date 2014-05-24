@@ -1,6 +1,16 @@
 Glad, for your interest in the "asswordk" application, asswordk is a passwords manager, that is able to store
 in a security manner all your passwords and display them from a flexible console command line interface.
 
+This application is not made to hold several thousand accounts, but can make available a few commands 
+on the command line, a small number of accounts (maximum a few hundreds).
+
+
+asswordk makes available a certain number of commands to store an account (new), amend an account (modify), 
+delete an account (delete), list all accounts (list), display the content of a account (print), 
+purge the database of accounts (purge).
+And change the mainpassword of your database accounts.
+
+
 Installation :
 ============
 
@@ -35,3 +45,16 @@ chmod ugo+rw /usr/share/asswordk/asswordk.db
 If this file does not exist, "asswordk" application will be stop with a error message that invite you to create this file.
 
 See "file_format.txt" documentation to know what there inside this file.
+
+
+How to use asswordk
+===================
+
+just run asswordk...
+The first time you execute it, asswordk ask you a main password to protect your database accounts, give it one, a good and
+strong, this password will be crypted in SHA512 to protect it as strongly as possible.
+
+As now you are protected, you can tytpe help command to know all keywords commands are avalaible. you can use too 
+help follow by a command keyword, to have spécific help on it.
+
+new command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).

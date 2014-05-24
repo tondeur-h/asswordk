@@ -40,10 +40,25 @@ using std::normal_color;
 //dbfile manage
 #include "DBFile.h"
 
+//clear screen auto
+#include "Timer.h"
+
 
 namespace pawk {
 
 DBFile* db; //object dbfile
+
+
+
+/*!
+ * callback fonction that will be call when time is out
+ * @param timer
+ */
+void clr_auto(Timer* timer)
+{
+   std::clrscr(); //clear screen
+	timer->Stop(); //stop timer
+}
 
 
 
@@ -62,7 +77,8 @@ return std::strtol(numascii.c_str(),0,10);
 
 
 /*!
- *
+ * generate a simple password...
+ * can be ameliorate...
  * @param size
  * @return
  */
@@ -228,7 +244,70 @@ if (entries->size()==0){
  * @param id
  */
 void Console::modify_entry(int id){
+	//local entry variables
+	string login;
+	string password;
+	string notes;
+	string url;
 
+
+	//test id if exist in entries list
+	if ((unsigned int)id>(entries->size())){
+		cout<<"This entry id does'nt exist...!\n";
+		return;
+	}
+	//get entry from entries
+entry=entries->at(id);
+
+		//ask questions about entry
+		//get login cannot be empty...
+		cout<<"login, keep blank for no change ("<<entry.login<<")?";
+		getline(cin,login);
+		if (login.empty()){login=entry.login;}
+
+
+
+		//get password can be empty
+		ABlowfish::awkBlowfish a;
+
+		cout<<"password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
+		getline(cin,password);
+		if (password.empty()){password=a.decrypt(a.stringtoCipher(entry.password),mainpassword);}
+
+
+		//get url cannot be empty
+		cout<<"url or machine, keep blank for no change ("<<entry.url<<")?";
+		getline(cin,url);
+		if (url.empty()){url=entry.url;}
+
+
+		//get notes can be empty
+		cout<<"notes, keep blank for no change ("<<entry.notes<<")?";
+		getline(cin,notes);
+		if (notes.empty()){notes=entry.notes;}
+
+
+	//save informations
+
+		entry.login=login;
+		entry.password=a.ciphertoString(a.crypt(password,mainpassword));
+		entry.pwlenght=0;
+		entry.url=url;
+		entry.notes=notes;
+
+		//change entry in the vector entries...
+		entries->at(id)=entry;
+
+		db=new DBFile(); //create access dbfile
+		db->resetFile("/usr/share/asswordk/asswordk.db");
+		db->writeHeader(a.sha(mainpassword));
+		//write all entries left
+		db->writeAll(entries);
+		//close the dbfile if all is reading...
+		delete db;
+
+		//show modifications...
+		list_entry(0);
 } //end modify function
 
 
@@ -248,10 +327,16 @@ if ((unsigned int)id<(entries->size())){
 	cout<<"login : "<< entries->at(id).login<<endl;
 	ABlowfish::awkBlowfish crypto;
 	//decrypt password for user
-	cout<<"password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),"c9tzzf2")<<endl;
+	cout<<"password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
 	cout<<"url :"<<entries->at(id).url<<endl;
 	cout<<"notes :"<<entries->at(id).notes<<endl;
 	std::normal_color();
+
+	//create the timer for auto clean screen
+	Timer clr_timer(5000,clr_auto);
+	//waiting loop
+	while(clr_timer.IsActive())clr_timer.Probe();
+
 } else
 {
 	//oops id not right
@@ -409,7 +494,7 @@ case 10: //help print
 		color("32");
 		cout<<"Syntax : print <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\n"<<std::endl;
+		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clear in about 5 secondes after printing...\n"<<std::endl;
 		break;
 case 11: //help password
 		cout<<"commands help\n============================"<<std::endl;

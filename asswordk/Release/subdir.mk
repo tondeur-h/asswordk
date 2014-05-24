@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../Console.cpp \
 ../DBFile.cpp \
+../Timer.cpp \
 ../awkBlowfish.cpp \
 ../main.cpp \
 ../tools.cpp 
@@ -13,6 +14,7 @@ CPP_SRCS += \
 OBJS += \
 ./Console.o \
 ./DBFile.o \
+./Timer.o \
 ./awkBlowfish.o \
 ./main.o \
 ./tools.o 
@@ -20,6 +22,7 @@ OBJS += \
 CPP_DEPS += \
 ./Console.d \
 ./DBFile.d \
+./Timer.d \
 ./awkBlowfish.d \
 ./main.d \
 ./tools.d 

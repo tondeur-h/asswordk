@@ -22,7 +22,7 @@ Distribution that use sudoers :
 
 sudo mkdir /usr/share/asswordk
 sudo touch /usr/share/asswordk/asswordk.db
-sudo chmod g+w /usr/share/asswordk/asswordk.db
+sudo chmod ugo+rw /usr/share/asswordk/asswordk.db
 
 Distribution that not use sudoers :
 -----------------------------------
@@ -30,7 +30,7 @@ Distribution that not use sudoers :
 su root
 mkdir /usr/share/asswordk
 touch /usr/share/asswordk/asswordk.db
-chmod g+w /usr/share/asswordk/asswordk.db
+chmod ugo+rw /usr/share/asswordk/asswordk.db
 
 If this file does not exist, "asswordk" application will be stop with a error message that invite you to create this file.
 

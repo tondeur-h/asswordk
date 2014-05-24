@@ -59,8 +59,10 @@ public:
 	void cmd_loop(); //main loop waiting for user commands
 	void hello(); //display hello message
 	void help(std::string value); //display help on commands
+	long int ascii2number(std::string numascii); //test if ascii is a number
+	std::string generate_password(long int size);//generate a password with a specific size
 	void new_entry(); //command new
-	void list_entry(int id); //command list
+	void list_entry(unsigned int id); //command list
 	void modify_entry(int id); //command modify
 	void delete_entry(int id); //command delete
 	void purge(); //command purge
@@ -69,6 +71,7 @@ public:
 	void run_cmd(int cmdi,std::string value); //distribute command
 	bool identifying(); //ask to identify if not!
 	bool create_credential();//create a new credential
+	bool change_password();//for changing mainpassword by user
 	virtual ~Console();
 };
 

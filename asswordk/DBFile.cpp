@@ -25,7 +25,7 @@ namespace pawk {
 /*!
  * constructor of this class do nothing
  */
-DBFile::DBFile(){/*do nothing*/}
+DBFile::DBFile(){dbfile=0;}
 
 
 /*!
@@ -36,6 +36,20 @@ DBFile::DBFile(){/*do nothing*/}
 bool DBFile::openForReadWrite(string pathDB){
 	//open as red/write...
 	dbfile=new fstream(pathDB.c_str(),std::ios::out | std::ios::in);
+	//if failed then return false to indicate to créate one or indicate true if good
+	if (*dbfile){ return true;}
+return false;
+}
+
+
+/*!
+ * open as reading and write a db file
+ * @param pathDB
+ * @return bool if ok
+ */
+bool DBFile::resetFile(string pathDB){
+	//open as red/write...
+	dbfile=new fstream(pathDB.c_str(),std::ios::out);
 	//if failed then return false to indicate to créate one or indicate true if good
 	if (*dbfile){ return true;}
 return false;
@@ -138,7 +152,8 @@ return false;
  */
 void DBFile::writeAll(std::vector<pawk::struct_entry>* v){
 *dbfile<<"[BEGIN]\n";
-	for (int it=0;it<v->size();it++){
+//std::cout<<"# -- v size : "<<v->size()<<std::endl;
+	for (unsigned int it=0;it<v->size();it++){
 		*dbfile<<"id="<<it<<"\n";
 		*dbfile<<"login="<<v->at(it).login<<"\n";
 		*dbfile<<"password="<<v->at(it).password<<"\n";

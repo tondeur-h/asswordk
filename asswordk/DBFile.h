@@ -45,6 +45,7 @@ class DBFile {
 
 	DBFile(); //construct a filestream
 	bool openForReadWrite(string pathDB); //open for read/write
+	bool resetFile(string pathDB);//open end emptying the file
 	bool testFileFormat(); //test if file exist and right format
 	string readValue(string param); //read a parameter
 	bool readAll(std::vector<pawk::struct_entry>* v); //read all entries and sent into a vector + password

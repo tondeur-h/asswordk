@@ -327,6 +327,49 @@ entry=entries->at(id);
 
 
 /*!
+ * list all entries that contains your search string in the login field.
+ * @param search_login
+ */
+void Console::search_entries(string search_login){
+string login;
+int nb_found=0;
+
+//test if search_entry not empty, if is it so quit
+	if (search_login.empty()){
+		cout<<"You can not search for an empty string...Sorry!\n";
+		return;
+	}
+//for each entry in the vector print this that match
+
+	for (unsigned int it=0;it<entries->size();it++){
+		//read vector.login
+		login=entries->at(it).login;
+		if (login.find(search_login)!=string::npos){
+			//OK FOUND..
+			std::color("35");
+			cout<<"id "<<it<<" - "<<entries->at(it).login<<"@"<<entries->at(it).url<<endl;
+			nb_found++;
+			std::normal_color();
+		} //end if
+	} //end for
+
+	//give an answers
+	if (nb_found==1){
+		cout<<nb_found<<" entry were found match your search \""<<search_login<<"\"."<<endl;
+	}
+	if (nb_found>1) {
+		cout<<nb_found<<" entries were found match your search \""<<search_login<<"\"."<<endl;
+	}
+	if (nb_found==0)
+	{
+		cout<<"No entry match your search...!"<<endl;
+	}
+}
+
+
+
+
+/*!
  * Show un full entry wich pass is id
  * @param id
  */
@@ -433,7 +476,7 @@ cmd=(value.compare("CLEAR")==0)?8:cmd;
 cmd=(value.compare("HELLO")==0)?9:cmd;
 cmd=(value.compare("PRINT")==0)?10:cmd;
 cmd=(value.compare("PASSWORD")==0)?11:cmd;
-
+cmd=(value.compare("SEARCH")==0)?12:cmd;
 
 switch (cmd){
 case 1://quit help
@@ -450,7 +493,7 @@ case 2: //help help
 		normal_color();
 		cout<<"=>Show details of a help command.\n<cmd> can take one of this values following :\n"<<std::endl;
 		cout<<"list\tnew\tmodify\tdelete\tprint\tpassword"<<std::endl;
-		cout<<"purge\tclear\thelp\thello\tquit\n"<<std::endl;
+		cout<<"purge\tsearch\tclear\thelp\thello\tquit\n"<<std::endl;
 		cout<<"=>If <cmd> is empty, show general help.\n"<<std::endl;
 		break;
 case 3: //help list
@@ -516,11 +559,18 @@ case 11: //help password
 		normal_color();
 		cout<<"=>Change the main password.\n"<<std::endl;
 		break;
+case 12: //help password
+		cout<<"Commands help\n============================"<<std::endl;
+		color("32");
+		cout<<"Syntax : search <login>\n"<<std::endl;
+		normal_color();
+		cout<<"=>List all the credential that login match exactly with your search.\n"<<std::endl;
+		break;
 default: //general help
 	cout<<"=================================="<<std::endl;
 	cout<<"Commands list\n"<<std::endl;
 	cout<<"list\tnew\tmodify\tdelete\tprint\tpassword"<<std::endl;
-	cout<<"purge\tclear\thelp\thello\tquit\n"<<std::endl;
+	cout<<"purge\tsearch\tclear\thelp\thello\tquit\n"<<std::endl;
 	cout<<"=>To get details on a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
 }
@@ -570,6 +620,9 @@ void Console::run_cmd(int cmdi,string value){
 			break;
 	case 11:
 			change_password();
+			break;
+	case 12:
+			search_entries(value);
 			break;
 	default:
 			cout<<"Unknow command (type help)!"<<std::endl;
@@ -657,6 +710,7 @@ cmd=(cmdl.compare("CLEAR")==0)?8:cmd;
 cmd=(cmdl.compare("HELLO")==0)?9:cmd;
 cmd=(cmdl.compare("PRINT")==0)?10:cmd;
 cmd=(cmdl.compare("PASSWORD")==0)?11:cmd;
+cmd=(cmdl.compare("SEARCH")==0)?12:cmd;
 
 run_cmd(cmd,value);
 }

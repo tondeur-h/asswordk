@@ -66,6 +66,7 @@ public:
 	void modify_entry(int id); //command modify
 	void delete_entry(int id); //command delete
 	void purge(); //command purge
+	void search_entries(std::string login);//command search
 	void print_entry(int id); //command print
 	void execute_cmd(std::string cmdl,std::string value); //switch command to execute
 	void run_cmd(int cmdi,std::string value); //distribute command

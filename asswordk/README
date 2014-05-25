@@ -9,7 +9,7 @@ a small number of accounts (maximum a few hundreds).
 
 asswordk makes available a certain number of commands to store an account (new), amend an account (modify), 
 delete an account (delete), list all accounts (list), display the content of a account (print), 
-purge the accounts database (purge).
+purge the accounts database (purge), search a credential in the list (search).
 
 And change the mainpassword of your database accounts.
 
@@ -80,6 +80,8 @@ the first id (0) will be used.
 the first id (0) will be used.
 
 "purge" command allows you to delete all entries from your credential, you must identifying you before for security.
+
+"search" command allows you to search an entry by is login, and list all of this that match your search string.
 
 "password" command allows you to change your main password, before changing it, you must identifying you, and so
 change your password, with a confirmation ask.

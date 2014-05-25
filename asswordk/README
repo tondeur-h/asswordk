@@ -16,9 +16,11 @@ And change the mainpassword of your database accounts.
 Installation :
 ============
 
-you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk.tgz
-you can download the binary and sources debian package at this url http://tondeurh.fr/software/asswordk.deb
+you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk-0.1.tgz
+untar it with command : tar -xf asswordk-0.1.tgz
 
+you can download the binary and sources debian package at this url http://tondeurh.fr/software/asswordk-0.1.deb
+depack archive with this command : dpkg -i asswordk-0.1.deb
 
 Pre-requisite :
 ==============

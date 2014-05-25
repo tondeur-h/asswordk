@@ -21,6 +21,22 @@
 
 namespace pawk {
 
+/*!
+ *get current date time
+ * @return
+ */
+const std::string DBFile::currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+
+
 
 /*!
  * constructor of this class do nothing
@@ -171,7 +187,8 @@ void DBFile::writeAll(std::vector<pawk::struct_entry>* v){
  */
 void DBFile::writeHeader(string pass){
 *dbfile<<"#asswordk\n";
-*dbfile<<"#please do not edit manually\n\n";
+*dbfile<<"#please do not edit manually\n";
+*dbfile<<currentDateTime()<<"\n\n";
 *dbfile<<"mainpassword="<<pass<<"\n\n";
 }
 

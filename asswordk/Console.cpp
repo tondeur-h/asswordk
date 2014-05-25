@@ -220,11 +220,24 @@ void Console::delete_entry(int id){
  */
 void Console::list_entry(unsigned int max_id){
 //cout<<"#-- max id :"<<max_id<<endl;
+int count_line;
 
-std::color("35");
+count_line=0;
+
 for(unsigned int nbl=0;nbl<entries->size();nbl++){
 if (nbl>=max_id){
+	std::color("35");
 	cout<<"id "<<nbl<<" - "<<entries->at(nbl).login<<"@"<<entries->at(nbl).url<<endl;
+	count_line++;
+	//***********************manage pages******************
+		if(count_line>=20){
+			std::normal_color();
+			cout<<"Press \"ENTER KEY\" for next page."<<endl;
+			cin.ignore(1);
+			std::clrscr();
+			count_line=0;
+		}
+	//*****************************************************
 }
 }
 //return to normal color
@@ -571,6 +584,51 @@ void Console::run_cmd(int cmdi,string value){
  * function to change the main password of the user...
  */
 bool Console::change_password(){
+	string pass1,pass2;
+	//ask to be identified
+	//break identified relation...
+
+	cout<<"You want to change your main password...\n"<<endl;
+	identified=false;
+	//ask again now
+	if (!identifying()){identified=true;return false;}
+
+	//ask new password
+	cout<<"Please enter a new password for protect your credentials : (enter a password follow by a enter key)?";
+	pass1=std::getpass();
+		//if pass1 is empty stop
+		if (pass1.empty()){
+			cout<<"This new password cannot be empty!..."<<endl;
+			return false;
+		}
+
+	//confirm it
+	cout<<"Please confirm your password : (enter a password follow by a enter key)?";
+	pass2=std::getpass();
+		//if pass1!=pass2 stop
+		if (pass1.compare(pass2)!=0){
+		cout<<"Your confirm password is not the same!..."<<endl;
+		return false;
+	}
+
+		//hash in sha512 this password
+		ABlowfish::awkBlowfish sha;
+		string encoded=sha.sha(pass1);
+		mainpassword=pass1;
+		identified=true;
+
+
+		//create the dbfile ans save coded password
+		db=new pawk::DBFile();
+		db->openForReadWrite("/usr/share/asswordk/asswordk.db");
+		db->writeHeader(encoded); //write header for mainpassword
+		db->writeAll(entries); //save all credentials too
+		delete db;
+
+		//success
+		std::color("36");
+		cout<<"Your new password has been successfully changed, use this one next time."<<endl;
+		std::normal_color();
 	return true;
 }
 
@@ -716,7 +774,7 @@ std::color("0"); //reset
 temppass=std::getpass();
 //std::getline(cin,temppass);
 //std::normal_color(); //reset background and foreground colors.
-std::clrscr(); //clear screen
+//std::clrscr(); //clear screen
 
 	//encode it in sha512
 	ABlowfish::awkBlowfish sha;

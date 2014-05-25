@@ -45,6 +45,7 @@ class DBFile {
 
 	DBFile(); //construct a filestream
 	bool openForReadWrite(string pathDB); //open for read/write
+	const std::string currentDateTime(); //get current date time
 	bool resetFile(string pathDB);//open end emptying the file
 	bool testFileFormat(); //test if file exist and right format
 	string readValue(string param); //read a parameter

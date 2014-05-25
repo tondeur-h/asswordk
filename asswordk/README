@@ -1,18 +1,23 @@
+asswordk Version 0.1
+====================
+
 Glad, for your interest in the "asswordk" application, asswordk is a passwords manager, that is able to store
 in a security manner all your passwords and display them from a flexible console command line interface.
 
-This application is not made to hold several thousand accounts, but can make available a few commands 
-on the command line, a small number of accounts (maximum a few hundreds).
-
+This application is not made to hold several thousand accounts, but can make available with a few command line, 
+a small number of accounts (maximum a few hundreds).
 
 asswordk makes available a certain number of commands to store an account (new), amend an account (modify), 
 delete an account (delete), list all accounts (list), display the content of a account (print), 
-purge the database of accounts (purge).
-And change the mainpassword of your database accounts.
+purge the accounts database (purge).
 
+And change the mainpassword of your database accounts.
 
 Installation :
 ============
+
+you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk.tgz
+you can download the binary and sources debian package at this url http://tondeurh.fr/software/asswordk.deb
 
 
 Pre-requisite :
@@ -21,6 +26,8 @@ Pre-requisite :
 If you install this application from a debian package, libcrypto++9 will be installed too, with the dependences tags.
 
 If you install this application from the tarball distribution, you need to install libcrypto++9 package version 5.6.1.6
+before.
+
 
 After installation :
 ====================
@@ -52,9 +59,39 @@ How to use asswordk
 
 just run asswordk...
 The first time you execute it, asswordk ask you a main password to protect your database accounts, give it one, a good and
-strong, this password will be crypted in SHA512 to protect it as strongly as possible.
+strong password, this password will be crypted in SHA512 to protect it as strongly as possible.
 
-As now you are protected, you can tytpe help command to know all keywords commands are avalaible. you can use too 
-help follow by a command keyword, to have spécific help on it.
+As now you are protected, you can keyboarding help command to know all keywords commands that are avalaible. you can use too 
+help command follow by a command keyword, to have specific help on it.
 
-new command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).
+"new" command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).
+
+"list" command, allows you to listing all credentials there were in you database, just see you [id] login@url, not the password,
+the id number is very important, is usefull for some other command like print, delete etc...
+
+"print" command, allows you to printing on the screen all informations from a entry in your credrentials, quickly note this
+informations, because this informations will be cleaning from screen in five seconds. you must point to the id you want 
+to delete, if none, the first id (0) will be used.
+
+"modify" command, allows to modify an entry from your credentials, you must point to the id you want to delete, if none,
+the first id (0) will be used.
+
+"delete" command allows you to delete a entry from your credential, you must point to the id you want to delete, if none,
+the first id (0) will be used.
+
+"purge" command allows you to delete all entries from your credential, you must identifying you before for security.
+
+"password" command allows you to change your main password, before changing it, you must identifying you, and so
+change your password, with a confirmation ask.
+
+"clear" command, allows you to clean screen manually for confidentiality...
+
+"hello" command show you the name and copyright of this application.
+
+"quit" command is bye bye command...
+
+
+Hope this application will be usefull!
+
+Tondeur Hervé
+

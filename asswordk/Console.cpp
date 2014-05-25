@@ -116,20 +116,20 @@ string url;
 	//ask questions about entry
 	//get login cannot be empty...
 	while (login.empty()){
-	cout<<"login ?";
+	cout<<"Login ?";
 	getline(cin,login);
-	if (login.empty()){cout<<"Cannot be empty!"<<endl;}
+	if (login.empty()){cout<<"Can not be empty!"<<endl;}
 	}
 
 	//get password can be empty
-	cout<<"password (blank to generate one)?";
+	cout<<"Password (blank to generate one)?";
 	getline(cin,password);
 
 
 	if (password.length()==0){
 		pwl=false;
 		while(!pwl){
-			cout<<"Longueur du mot de passe ?";
+			cout<<"Lenght of the password to generate ?";
 			getline(cin,pwlenght);
 
 			pwl=(ascii2number(pwlenght)>0) & (ascii2number(pwlenght)>=4);
@@ -144,13 +144,13 @@ string url;
 
 	//get url cannot be empty
 	while (url.empty()){
-	cout<<"url or machine name ?";
+	cout<<"Url or Machine name ?";
 	getline(cin,url);
 	if (url.empty()){cout<<"Cannot be empty!"<<endl;}
 	}
 
 	//get notes can be empty
-	cout<<"notes about this connection ?";
+	cout<<"Notes about this connection ?";
 	getline(cin,notes);
 
 
@@ -190,8 +190,8 @@ void Console::delete_entry(int id){
 		//erase entry
 		entries->erase(entries->begin()+id);
 		//say ok done
-		cout<<"delete entry "<<id<<" ok..."<<endl;
-		cout<<"Compact id entries..."<<endl;
+		cout<<"Delete entry "<<id<<" ok..."<<endl;
+		cout<<"Compacting id entries..."<<endl;
 		//print list of entries left...
 		list_entry(0);
 		//save values
@@ -206,7 +206,7 @@ void Console::delete_entry(int id){
 	}
 	else
 	{
-		cout<<"No entry left in the credential, impossible to satisfy your ask..."<<endl;
+		cout<<"Any remaining entries in the credential, impossible satisfy your ask..."<<endl;
 	}
 } //end delete function
 
@@ -274,7 +274,7 @@ entry=entries->at(id);
 
 		//ask questions about entry
 		//get login cannot be empty...
-		cout<<"login, keep blank for no change ("<<entry.login<<")?";
+		cout<<"Login, keep blank for no change ("<<entry.login<<")?";
 		getline(cin,login);
 		if (login.empty()){login=entry.login;}
 
@@ -283,19 +283,19 @@ entry=entries->at(id);
 		//get password can be empty
 		ABlowfish::awkBlowfish a;
 
-		cout<<"password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
+		cout<<"Password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
 		getline(cin,password);
 		if (password.empty()){password=a.decrypt(a.stringtoCipher(entry.password),mainpassword);}
 
 
 		//get url cannot be empty
-		cout<<"url or machine, keep blank for no change ("<<entry.url<<")?";
+		cout<<"Url or Machine, keep blank for no change ("<<entry.url<<")?";
 		getline(cin,url);
 		if (url.empty()){url=entry.url;}
 
 
 		//get notes can be empty
-		cout<<"notes, keep blank for no change ("<<entry.notes<<")?";
+		cout<<"Notes, keep blank for no change ("<<entry.notes<<")?";
 		getline(cin,notes);
 		if (notes.empty()){notes=entry.notes;}
 
@@ -336,13 +336,13 @@ void Console::print_entry(int id){
 //if id is ok then show all
 if ((unsigned int)id<(entries->size())){
 	std::color("32");
-	cout<<"id : "<<id<<endl;
-	cout<<"login : "<< entries->at(id).login<<endl;
+	cout<<"ID : "<<id<<endl;
+	cout<<"Login : "<< entries->at(id).login<<endl;
 	ABlowfish::awkBlowfish crypto;
 	//decrypt password for user
-	cout<<"password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
-	cout<<"url :"<<entries->at(id).url<<endl;
-	cout<<"notes :"<<entries->at(id).notes<<endl;
+	cout<<"Password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+	cout<<"Url :"<<entries->at(id).url<<endl;
+	cout<<"Notes :"<<entries->at(id).notes<<endl;
 	std::normal_color();
 
 	//create the timer for auto clean screen
@@ -365,7 +365,7 @@ if ((unsigned int)id<(entries->size())){
  */
 void Console::purge(){
 //ask before do to be sure and confirm with password ask
-cout<<"Before let you purge all entries, please identify you with your password..."<<endl;
+cout<<"Before you leave purge all entries, please login with your password..."<<endl;
 
 //fail identification for security
 identified=false;
@@ -402,10 +402,10 @@ std::clrscr();
 color("32");
 cout<<"asswordk version 0.1"<<std::endl;
 normal_color();
-cout<<"Passwords manager application"<<std::endl;
+cout<<"Passwords Manager Application"<<std::endl;
 cout<<"Copyright (c) 2014 Tondeur hervé\nhttp://www.tondeurh.fr"<<std::endl;
 cout<<"Terms of use of this program are defined by the General Public Licence (GPL) Version 3"<<std::endl;
-cout<<"Type command \"help\" to get helps..."<<endl;
+cout<<"Type command \"help\" to get help..."<<endl;
 cout<<std::endl;
 }
 
@@ -437,14 +437,14 @@ cmd=(value.compare("PASSWORD")==0)?11:cmd;
 
 switch (cmd){
 case 1://quit help
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : quit\n"<<std::endl;
 		normal_color();
 		cout<<"=>Type this command with no parameter to quit this application.\n"<<std::endl;
 		break;
 case 2: //help help
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : help <cmd>\n"<<std::endl;
 		normal_color();
@@ -454,74 +454,74 @@ case 2: //help help
 		cout<<"=>If <cmd> is empty, show general help.\n"<<std::endl;
 		break;
 case 3: //help list
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : list [id]\n"<<std::endl;
 		normal_color();
 		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing.\n"<<std::endl;
 		break;
 case 4: //help new
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : new\n"<<std::endl;
 		normal_color();
-		cout<<"=>This command permit to create a new credential entry.\n"<<std::endl;
+		cout<<"=>This command allows you to create a new credential entry.\n"<<std::endl;
 		break;
 case 5: //help delete
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : delete <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0\n"<<std::endl;
 		break;
 case 6: //help modify
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : modify <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 case 7: //help purge
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : purge\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete all entries from credential\n Be carefull evething will be lost.\nYou must identifying yourself before."<<std::endl;
 		break;
 case 8: //help clear
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : clear\n"<<std::endl;
 		normal_color();
 		cout<<"=>Erase screen for confidentiality.\n"<<std::endl;
 		break;
 case 9: //help hello
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : hello\n"<<std::endl;
 		normal_color();
 		cout<<"=>Show application name and copyright.\n"<<std::endl;
 		break;
 case 10: //help print
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : print <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clear in about 5 secondes after printing...\n"<<std::endl;
+		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clean in about 5 secondes after printing...\n"<<std::endl;
 		break;
 case 11: //help password
-		cout<<"commands help\n============================"<<std::endl;
+		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : password\n"<<std::endl;
 		normal_color();
-		cout<<"=>Change the mainpassword.\n"<<std::endl;
+		cout<<"=>Change the main password.\n"<<std::endl;
 		break;
 default: //general help
 	cout<<"=================================="<<std::endl;
 	cout<<"Commands list\n"<<std::endl;
 	cout<<"list\tnew\tmodify\tdelete\tprint\tpassword"<<std::endl;
 	cout<<"purge\tclear\thelp\thello\tquit\n"<<std::endl;
-	cout<<"To get detail for a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
+	cout<<"=>To get details on a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
 }
 
@@ -594,7 +594,7 @@ bool Console::change_password(){
 	if (!identifying()){identified=true;return false;}
 
 	//ask new password
-	cout<<"Please enter a new password for protect your credentials : (enter a password follow by a enter key)?";
+	cout<<"Please enter a new password for protect your credentials : (enter a password follow by the enter key)?";
 	pass1=std::getpass();
 		//if pass1 is empty stop
 		if (pass1.empty()){
@@ -603,7 +603,7 @@ bool Console::change_password(){
 		}
 
 	//confirm it
-	cout<<"Please confirm your password : (enter a password follow by a enter key)?";
+	cout<<"Please confirm your password : (enter a password follow by the enter key)?";
 	pass2=std::getpass();
 		//if pass1!=pass2 stop
 		if (pass1.compare(pass2)!=0){
@@ -692,7 +692,7 @@ void Console::cmd_loop(){
 	//if file not exist quit this function
 	if (!db->openForReadWrite("/usr/share/asswordk/asswordk.db")){
 		cout<<"Error - Database file not found..."<<endl;
-		cout<<"You must create a databasefile, see documentation..."<<endl;
+		cout<<"You must create a database file, see documentation..."<<endl;
 		delete db;
 		return;
 	}
@@ -709,7 +709,7 @@ void Console::cmd_loop(){
 
 	//before continuing, user must be loged...
 	if (!identifying()){
-	cout<<"Error - you are not correctly identified... sorry."<<endl;
+	cout<<"."<<endl;
 	//bye bye
 	exit(3);
 	} else
@@ -768,13 +768,11 @@ if (!identified){
 string temppass;
 	//ask password
 std::color("7"); //inverse video
-cout<<"You must be identified to continue (enter your password follow by enter key) ?";
+cout<<"You must be identified to continue (enter your password follow by the enter key) ?";
 std::color("0"); //reset
-//std::color("30"); //black color to hide password=> need a better way to do that
+
 temppass=std::getpass();
-//std::getline(cin,temppass);
-//std::normal_color(); //reset background and foreground colors.
-//std::clrscr(); //clear screen
+
 
 	//encode it in sha512
 	ABlowfish::awkBlowfish sha;
@@ -812,7 +810,7 @@ return true;
 bool Console::create_credential(){
 	string pass1, pass2;
 //ask for a password
-cout<<"Please enter a password for protect your new credentials : (enter a password follow by a enter key)?";
+cout<<"Please enter a password for protect your new credentials : (enter a password follow by the enter key)?";
 pass1=std::getpass();
 	//if pass1 is empty stop
 	if (pass1.empty()){
@@ -821,7 +819,7 @@ pass1=std::getpass();
 	}
 
 //confirm it
-cout<<"Please confirm your password : (enter a password follow by a enter key)?";
+cout<<"Please confirm your password : (enter a password follow by the enter key)?";
 pass2=std::getpass();
 	//if pass1!=pass2 stop
 	if (pass1.compare(pass2)!=0){

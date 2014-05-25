@@ -2,11 +2,11 @@
 #magic string "#asswordk"
 #this magic string must be the first line of the file, this word is used to control that the file is good
 
-next line must be this entry, represent the main password as used too as the key for the blowfish crypting...
+the next line must be this entry in the bottom, represent the main password as used  as the key for the blowfish crypting...
 mainpassword=HASH SHA512
 
-#next lines must be composed with all credentials entries.
-#begining of the info block must be mark with this
+#the next lines must be composed with all credentials entries.
+#begining of the info block must begin with this mark
 [BEGIN]
 #this pattern can be repeated...
 id=Id for entry (int)
@@ -15,14 +15,13 @@ password= crypt(blowfish) (string)
 url= (string)
 notes= (string)
 ...
-#repeat as more as needed
+#repeated  as many time as needed
 [END]
-# this tag mark ending patterns
+# this tag mark the ending patterns
 
 
 #this file must be in this directory with this name
 /usr/share/asswordk/asswordk.db
 
 #user must be able to read and write it!
-#permission must be wr for users...
-
+#permission must be "wr" for users...

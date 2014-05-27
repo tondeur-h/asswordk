@@ -19,16 +19,24 @@ Installation :
 you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk-0.1.tgz
 untar it with command : tar -xf asswordk-0.1.tgz
 
-you can download the binary and sources debian package at this url http://tondeurh.fr/software/asswordk-0.1.deb
+you can download the binary debian package at this url http://tondeurh.fr/software/asswordk-0.1_i386.deb
 depack archive with this command : dpkg -i asswordk-0.1.deb
+
+You can download the sources files from this url http://tondeurh.fr/software/asswordk-0.1.tgz
+
+For compiling this application you need to be installed with C++ compiler, g++ version 4.8 and install the crypto++
+developpment library libcrypto++-dev version 5.6.1-6
 
 Pre-requisite :
 ==============
 "asswordk" use crypto++ lib to crypt mainpassword and all yours passwords.
 If you install this application from a debian package, libcrypto++9 will be installed too, with the dependences tags.
 
-If you install this application from the tarball distribution, you need to install libcrypto++9 package version 5.6.1.6
+If you install this application from the tarball distribution, you need to install libcrypto++9 package version 5.6.1-6
 before.
+
+to compile, just enter in the release directory and run "make", enjoy...
+copy "asswork" application in a path directory of you system, and now see "after installation" paragraph...
 
 
 After installation :

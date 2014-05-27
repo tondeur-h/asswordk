@@ -687,6 +687,7 @@ bool Console::change_password(){
 
 
 
+
 /*!
  * test command function
  * dispatch call functions

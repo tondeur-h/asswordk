@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../AES.cpp \
 ../Console.cpp \
 ../DBFile.cpp \
 ../Timer.cpp \
@@ -12,6 +13,7 @@ CPP_SRCS += \
 ../tools.cpp 
 
 OBJS += \
+./AES.o \
 ./Console.o \
 ./DBFile.o \
 ./Timer.o \
@@ -20,6 +22,7 @@ OBJS += \
 ./tools.o 
 
 CPP_DEPS += \
+./AES.d \
 ./Console.d \
 ./DBFile.d \
 ./Timer.d \

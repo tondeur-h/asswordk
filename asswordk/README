@@ -1,4 +1,4 @@
-asswordk Version 0.1
+asswordk Version 0.2
 ====================
 
 Glad, for your interest in the "asswordk" application, asswordk is a passwords manager, that is able to store
@@ -10,6 +10,10 @@ a small number of accounts (maximum a few hundreds).
 asswordk makes available a certain number of commands to store an account (new), amend an account (modify), 
 delete an account (delete), list all accounts (list), display the content of a account (print), 
 purge the accounts database (purge), search a credential in the list (search).
+
+
+
+ copy a password into the X clipboard (copy),browse an url that was register in a credential (browse).
 
 And change the mainpassword of your database accounts.
 

@@ -102,7 +102,7 @@ return Str;
 /*!
  * run default browser
  */
-void Console::browse_entries(int id){
+void Console::browse_entry(int id){
 	string call_line="xdg-open ";
 	//stop if entries is empty
 	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
@@ -129,7 +129,7 @@ void Console::browse_entries(int id){
 /*!
  * run xclip to copy password in the clipboard
  */
-void Console::copy_entries(int id){
+void Console::copy_entry_password(int id){
 
 
 	string call_line="echo ";
@@ -344,7 +344,20 @@ if (entries->size()==0){
  * duplicate an entry and get to modify it...
  * @param id
  */
-void Console::duplicate_entries(int id){
+void Console::duplicate_entry(int id){
+
+	//test id if exist in entries list
+	if ((unsigned int)id>(entries->size())){
+		cout<<"This entry id does'nt exist...!\n";
+		return;
+	}
+
+	entry=entries->at(id);
+	int num_last=entries->size();
+	entries->push_back(entry);
+	cout<<"Duplicate entry is done..."<<endl;
+
+	modify_entry(num_last);
 
 }
 
@@ -761,13 +774,13 @@ void Console::run_cmd(int cmdi,string value){
 			search_entries(value);
 			break;
 	case 13:
-			browse_entries(std::atoi(value.c_str()));
+			browse_entry(std::atoi(value.c_str()));
 			break;
 	case 14:
-			copy_entries(std::atoi(value.c_str()));
+			copy_entry_password(std::atoi(value.c_str()));
 			break;
 	case 15:
-			duplicate_entries(std::atoi(value.c_str()));
+			duplicate_entry(std::atoi(value.c_str()));
 			break;
 	default:
 			cout<<"Unknow command (type help)!"<<std::endl;

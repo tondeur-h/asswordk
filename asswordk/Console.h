@@ -67,6 +67,9 @@ public:
 	void delete_entry(int id); //command delete
 	void purge(); //command purge
 	void search_entries(std::string login);//command search
+	void browse_entries(int id);//command browse default browser for internet
+	void copy_entries(int id); //command copy allows to copy the password in the X clipboard
+	void duplicate_entries(int id); //duplicate an entry and allows to modify it
 	void print_entry(int id); //command print
 	void execute_cmd(std::string cmdl,std::string value); //switch command to execute
 	void run_cmd(int cmdi,std::string value); //distribute command

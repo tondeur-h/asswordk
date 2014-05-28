@@ -99,6 +99,92 @@ return Str;
 
 
 
+/*!
+ * run default browser
+ */
+void Console::browse_entries(int id){
+	string call_line="xdg-open ";
+	//stop if entries is empty
+	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
+
+	//construct call adresses if id is ok
+
+	if ((unsigned)id < entries->size()){
+	call_line+=entries->at(id).url;
+	call_line+=" 2>/dev/null";
+	//std::color("7");
+	//cout <<"Press enter key after closing your browser!"<<endl;
+	//std::normal_color();
+	std::system(call_line.c_str());
+	}
+	else
+	{
+		cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+	}
+} //end funtion browse
+
+
+
+
+/*!
+ * run xclip to copy password in the clipboard
+ */
+void Console::copy_entries(int id){
+
+
+	string call_line="echo ";
+	int rtcall=0;
+
+	//stop if entries is empty
+	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
+
+	ABlowfish::awkBlowfish a;
+
+	//construct copy call xclip command line
+
+	if ((unsigned)id < entries->size()){
+	call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+
+	//try with xsel....
+		call_line+=" | xsel -bi 2>/dev/null";
+		//cout <<"# -- Call : "<<call_line<<endl;
+		rtcall=std::system(call_line.c_str());
+
+		//if fail with xsel try xclip
+		if (rtcall!=0){
+			call_line="echo ";
+			call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+			call_line+=" | xclip -i -selection clipboard 2>/dev/null";
+			//cout <<"# -- Call : "<<call_line<<endl;
+			rtcall=std::system(call_line.c_str());
+				//if fail said it to the user...
+				if (rtcall!=0){
+				std::color("7");
+				cout<<"Fail to copy password in the clipboard, xsel and xclip and not installed..."<<endl;
+				std::normal_color();
+				return;
+				} else
+				{
+				std::color("7");
+				cout<<"Password is copying in the clipboard..."<<endl;
+				std::normal_color();
+				}
+		} else
+		{
+			std::color("7");
+			cout<<"Password is copying in the clipboard..."<<endl;
+			std::normal_color();
+		}
+
+	}
+	else
+	{
+		cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+	}
+} //end funtion browse
+
+
+
 
 /*!
  * Define a new entry into the password database
@@ -138,6 +224,9 @@ string url;
 			{
 				password=generate_password(ascii2number(pwlenght));
 				cout<<"The password generated is : "<<password<<endl;
+				std::color("31");
+				cout<<"Do not forget to notice it !"<<endl;
+				std::normal_color();
 			}
 		}
 	}
@@ -175,6 +264,7 @@ string url;
 	delete db;
 
 	//show modifications...
+	std::clrscr();
 	list_entry(0);
 }
 
@@ -250,6 +340,13 @@ if (entries->size()==0){
 } //end list function
 
 
+/*!
+ * duplicate an entry and get to modify it...
+ * @param id
+ */
+void Console::duplicate_entries(int id){
+
+}
 
 
 /*!
@@ -442,8 +539,9 @@ else
  */
 void Console::hello(){
 std::clrscr();
+color("7");
 color("32");
-cout<<"asswordk version 0.1"<<std::endl;
+cout<<"asswordk version 0.2"<<std::endl;
 normal_color();
 cout<<"Passwords Manager Application"<<std::endl;
 cout<<"Copyright (c) 2014 Tondeur hervé\nhttp://www.tondeurh.fr"<<std::endl;
@@ -466,23 +564,40 @@ int cmd=0;
 value=std::ucase(value);
 //convert parameter for help action into integer value
 cmd=(value.compare("QUIT")==0)?1:cmd;
+cmd=(value.compare("EXIT")==0)?1:cmd;
 cmd=(value.compare("HELP")==0)?2:cmd;
 cmd=(value.compare("LIST")==0)?3:cmd;
+cmd=(value.compare("LS")==0)?3:cmd;
 cmd=(value.compare("NEW")==0)?4:cmd;
+cmd=(value.compare("ADD")==0)?4:cmd;
 cmd=(value.compare("DELETE")==0)?5:cmd;
+cmd=(value.compare("DEL")==0)?5:cmd;
 cmd=(value.compare("MODIFY")==0)?6:cmd;
+cmd=(value.compare("MOD")==0)?6:cmd;
 cmd=(value.compare("PURGE")==0)?7:cmd;
+cmd=(value.compare("PG")==0)?7:cmd;
 cmd=(value.compare("CLEAR")==0)?8:cmd;
+cmd=(value.compare("CLR")==0)?8:cmd;
 cmd=(value.compare("HELLO")==0)?9:cmd;
 cmd=(value.compare("PRINT")==0)?10:cmd;
+cmd=(value.compare("P")==0)?10:cmd;
 cmd=(value.compare("PASSWORD")==0)?11:cmd;
+cmd=(value.compare("PW")==0)?11:cmd;
 cmd=(value.compare("SEARCH")==0)?12:cmd;
+cmd=(value.compare("SH")==0)?12:cmd;
+cmd=(value.compare("BROWSE")==0)?13:cmd;
+cmd=(value.compare("BR")==0)?13:cmd;
+cmd=(value.compare("COPY")==0)?14:cmd;
+cmd=(value.compare("CP")==0)?14:cmd;
+cmd=(value.compare("DUPLICATE")==0)?15:cmd;
+cmd=(value.compare("DUP")==0)?15:cmd;
+
 
 switch (cmd){
-case 1://quit help
+case 1://help quit
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : quit\n"<<std::endl;
+		cout<<"Syntax : quit(exit)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Type this command with no parameter to quit this application.\n"<<std::endl;
 		break;
@@ -492,49 +607,49 @@ case 2: //help help
 		cout<<"Syntax : help <cmd>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Show details of a help command.\n<cmd> can take one of this values following :\n"<<std::endl;
-		cout<<"list\tnew\tmodify\tdelete\tprint\tpassword"<<std::endl;
-		cout<<"purge\tsearch\tclear\thelp\thello\tquit\n"<<std::endl;
+		cout<<"list(ls)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)\tduplicate(dup)"<<std::endl;
+		cout<<"purge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)\thelp\thello\n"<<std::endl;
 		cout<<"=>If <cmd> is empty, show general help.\n"<<std::endl;
 		break;
 case 3: //help list
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : list [id]\n"<<std::endl;
+		cout<<"Syntax : list(ls) [id]\n"<<std::endl;
 		normal_color();
 		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing.\n"<<std::endl;
 		break;
 case 4: //help new
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : new\n"<<std::endl;
+		cout<<"Syntax : new(add)\n"<<std::endl;
 		normal_color();
 		cout<<"=>This command allows you to create a new credential entry.\n"<<std::endl;
 		break;
 case 5: //help delete
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : delete <id>\n"<<std::endl;
+		cout<<"Syntax : delete(del) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0\n"<<std::endl;
 		break;
 case 6: //help modify
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : modify <id>\n"<<std::endl;
+		cout<<"Syntax : modify(mod) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 case 7: //help purge
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : purge\n"<<std::endl;
+		cout<<"Syntax : purge(pg)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete all entries from credential\n Be carefull evething will be lost.\nYou must identifying yourself before."<<std::endl;
 		break;
 case 8: //help clear
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : clear\n"<<std::endl;
+		cout<<"Syntax : clear(clr)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Erase screen for confidentiality.\n"<<std::endl;
 		break;
@@ -548,29 +663,50 @@ case 9: //help hello
 case 10: //help print
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : print <id>\n"<<std::endl;
+		cout<<"Syntax : print(p) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clean in about 5 secondes after printing...\n"<<std::endl;
 		break;
 case 11: //help password
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : password\n"<<std::endl;
+		cout<<"Syntax : password(pw)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Change the main password.\n"<<std::endl;
 		break;
-case 12: //help password
+case 12: //help search
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
-		cout<<"Syntax : search <login>\n"<<std::endl;
+		cout<<"Syntax : search(sh) <login>\n"<<std::endl;
 		normal_color();
 		cout<<"=>List all the credential that login match exactly with your search.\n"<<std::endl;
+		break;
+case 13: //help browse
+		cout<<"Commands help\n============================"<<std::endl;
+		color("32");
+		cout<<"Syntax : browse(br) <id>\n"<<std::endl;
+		normal_color();
+		cout<<"=>Open the url with the default browser of the choosen credential (if possible).\nIf id is not set, 0 is assume.\n"<<std::endl;
+		break;
+case 14: //help copy
+		cout<<"Commands help\n============================"<<std::endl;
+		color("32");
+		cout<<"Syntax : copy(cp) <id>\n"<<std::endl;
+		normal_color();
+		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume.\n"<<std::endl;
+		break;
+case 15: //help copy
+		cout<<"Commands help\n============================"<<std::endl;
+		color("32");
+		cout<<"Syntax : duplicate(dup) <id>\n"<<std::endl;
+		normal_color();
+		cout<<"=>Duplicate an entry and let you to modify it.\nIf id is not set, 0 is assume.\n"<<std::endl;
 		break;
 default: //general help
 	cout<<"=================================="<<std::endl;
 	cout<<"Commands list\n"<<std::endl;
-	cout<<"list\tnew\tmodify\tdelete\tprint\tpassword"<<std::endl;
-	cout<<"purge\tsearch\tclear\thelp\thello\tquit\n"<<std::endl;
+	cout<<"list(ls)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)\tduplicate(dup)"<<std::endl;
+	cout<<"purge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)\thelp\thello\n"<<std::endl;
 	cout<<"=>To get details on a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
 }
@@ -623,6 +759,15 @@ void Console::run_cmd(int cmdi,string value){
 			break;
 	case 12:
 			search_entries(value);
+			break;
+	case 13:
+			browse_entries(std::atoi(value.c_str()));
+			break;
+	case 14:
+			copy_entries(std::atoi(value.c_str()));
+			break;
+	case 15:
+			duplicate_entries(std::atoi(value.c_str()));
 			break;
 	default:
 			cout<<"Unknow command (type help)!"<<std::endl;
@@ -701,17 +846,33 @@ cmd=0;
 cmdl=std::ucase(std::trim(cmdl));
 
 cmd=(cmdl.compare("QUIT")==0)?1:cmd;
+cmd=(cmdl.compare("EXIT")==0)?1:cmd;
 cmd=(cmdl.compare("HELP")==0)?2:cmd;
 cmd=(cmdl.compare("LIST")==0)?3:cmd;
+cmd=(cmdl.compare("LS")==0)?3:cmd;
 cmd=(cmdl.compare("NEW")==0)?4:cmd;
+cmd=(cmdl.compare("ADD")==0)?4:cmd;
 cmd=(cmdl.compare("DELETE")==0)?5:cmd;
+cmd=(cmdl.compare("DEL")==0)?5:cmd;
 cmd=(cmdl.compare("MODIFY")==0)?6:cmd;
+cmd=(cmdl.compare("MOD")==0)?6:cmd;
 cmd=(cmdl.compare("PURGE")==0)?7:cmd;
+cmd=(cmdl.compare("PG")==0)?7:cmd;
 cmd=(cmdl.compare("CLEAR")==0)?8:cmd;
+cmd=(cmdl.compare("CLR")==0)?8:cmd;
 cmd=(cmdl.compare("HELLO")==0)?9:cmd;
 cmd=(cmdl.compare("PRINT")==0)?10:cmd;
+cmd=(cmdl.compare("P")==0)?10:cmd;
 cmd=(cmdl.compare("PASSWORD")==0)?11:cmd;
+cmd=(cmdl.compare("PW")==0)?11:cmd;
 cmd=(cmdl.compare("SEARCH")==0)?12:cmd;
+cmd=(cmdl.compare("SH")==0)?12:cmd;
+cmd=(cmdl.compare("BROWSE")==0)?13:cmd;
+cmd=(cmdl.compare("BR")==0)?13:cmd;
+cmd=(cmdl.compare("COPY")==0)?14:cmd;
+cmd=(cmdl.compare("CP")==0)?14:cmd;
+cmd=(cmdl.compare("DUPLICATE")==0)?15:cmd;
+cmd=(cmdl.compare("DUP")==0)?15:cmd;
 
 run_cmd(cmd,value);
 }

@@ -108,14 +108,20 @@ void Console::browse_entry(int id){
 	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
 
 	//construct call adresses if id is ok
-
 	if ((unsigned)id < entries->size()){
+		//construct the call command line
 	call_line+=entries->at(id).url;
-	call_line+=" 2>/dev/null";
-	//std::color("7");
-	//cout <<"Press enter key after closing your browser!"<<endl;
-	//std::normal_color();
-	std::system(call_line.c_str());
+	call_line+=" 2>/dev/null &";
+
+		//call the application
+	int retcall=std::system(call_line.c_str());
+		if (retcall!=0){
+			cout<<"Can not running "<<entries->at(id).url<<endl;
+		} else
+		{
+			cout<<"Browser opening : "<<entries->at(id).url<<endl;
+		}
+
 	}
 	else
 	{
@@ -132,7 +138,7 @@ void Console::browse_entry(int id){
 void Console::copy_entry_password(int id){
 
 
-	string call_line="echo ";
+	string call_line="echo '";
 	int rtcall=0;
 
 	//stop if entries is empty
@@ -146,15 +152,15 @@ void Console::copy_entry_password(int id){
 	call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
 
 	//try with xsel....
-		call_line+=" | xsel -bi 2>/dev/null";
+		call_line+="' | xsel -bi 2>/dev/null";
 		//cout <<"# -- Call : "<<call_line<<endl;
 		rtcall=std::system(call_line.c_str());
 
 		//if fail with xsel try xclip
 		if (rtcall!=0){
-			call_line="echo ";
+			call_line="echo '";
 			call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
-			call_line+=" | xclip -i -selection clipboard 2>/dev/null";
+			call_line+="' | xclip -i -selection clipboard 2>/dev/null";
 			//cout <<"# -- Call : "<<call_line<<endl;
 			rtcall=std::system(call_line.c_str());
 				//if fail said it to the user...
@@ -440,21 +446,36 @@ entry=entries->at(id);
  * list all entries that contains your search string in the login field.
  * @param search_login
  */
-void Console::search_entries(string search_login){
+void Console::search_entries(string search_str){
+//define usefull string for keep in memory the current entry.
 string login;
+string::size_type found_login;
+string url;
+string::size_type found_url;
+string notes;
+string::size_type found_notes;
+
+//int represent the number of found lines...
 int nb_found=0;
 
 //test if search_entry not empty, if is it so quit
-	if (search_login.empty()){
+	if (search_str.empty()){
 		cout<<"You can not search for an empty string...Sorry!\n";
 		return;
 	}
 //for each entry in the vector print this that match
 
 	for (unsigned int it=0;it<entries->size();it++){
-		//read vector.login
+		//read vector.login.url.notes
 		login=entries->at(it).login;
-		if (login.find(search_login)!=string::npos){
+		url=entries->at(it).url;
+		notes=entries->at(it).notes;
+
+		found_login=login.find(search_str);
+		found_url=url.find(search_str);
+		found_notes=notes.find(search_str);
+
+		if (found_login!=string::npos || found_url!=string::npos || found_notes!=string::npos){
 			//OK FOUND..
 			std::color("35");
 			cout<<"id "<<it<<" - "<<entries->at(it).login<<"@"<<entries->at(it).url<<endl;
@@ -465,10 +486,10 @@ int nb_found=0;
 
 	//give an answers
 	if (nb_found==1){
-		cout<<nb_found<<" entry were found match your search \""<<search_login<<"\"."<<endl;
+		cout<<nb_found<<" entry that match your search \""<<search_str<<"\"."<<endl;
 	}
 	if (nb_found>1) {
-		cout<<nb_found<<" entries were found match your search \""<<search_login<<"\"."<<endl;
+		cout<<nb_found<<" entries that match your search \""<<search_str<<"\"."<<endl;
 	}
 	if (nb_found==0)
 	{
@@ -629,21 +650,23 @@ case 3: //help list
 		color("32");
 		cout<<"Syntax : list(ls) [id]\n"<<std::endl;
 		normal_color();
-		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing.\n"<<std::endl;
+		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing."<<std::endl;
+		cout<<"ls is the short command to call list\n"<<endl;
 		break;
 case 4: //help new
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : new(add)\n"<<std::endl;
 		normal_color();
-		cout<<"=>This command allows you to create a new credential entry.\n"<<std::endl;
+		cout<<"=>This command allows you to create a new credential entry.add is the short command.\n"<<std::endl;
 		break;
 case 5: //help delete
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : delete(del) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0\n"<<std::endl;
+		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0."<<std::endl;
+		cout<<"You can Use the short command del as well.\n"<<endl;
 		break;
 case 6: //help modify
 		cout<<"Commands help\n============================"<<std::endl;
@@ -664,7 +687,7 @@ case 8: //help clear
 		color("32");
 		cout<<"Syntax : clear(clr)\n"<<std::endl;
 		normal_color();
-		cout<<"=>Erase screen for confidentiality.\n"<<std::endl;
+		cout<<"=>Clean screen for confidentiality.\n"<<std::endl;
 		break;
 case 9: //help hello
 		cout<<"Commands help\n============================"<<std::endl;
@@ -692,23 +715,25 @@ case 12: //help search
 		color("32");
 		cout<<"Syntax : search(sh) <login>\n"<<std::endl;
 		normal_color();
-		cout<<"=>List all the credential that login match exactly with your search.\n"<<std::endl;
+		cout<<"=>List all the credential that login or url or notes, match exactly with your search string.\n"<<std::endl;
 		break;
 case 13: //help browse
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : browse(br) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Open the url with the default browser of the choosen credential (if possible).\nIf id is not set, 0 is assume.\n"<<std::endl;
+		cout<<"=>Open the url with the default browser of the choosen credential (if possible).\nIf id is not set, 0 is assume."<<std::endl;
+		cout<<"You must have xdg-open installed on you system.\n"<<endl;
 		break;
 case 14: //help copy
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : copy(cp) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume.\n"<<std::endl;
+		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume."<<std::endl;
+		cout<<"You must have xsel or xclip installed on your system.\n"<<endl;
 		break;
-case 15: //help copy
+case 15: //help duplicate
 		cout<<"Commands help\n============================"<<std::endl;
 		color("32");
 		cout<<"Syntax : duplicate(dup) <id>\n"<<std::endl;

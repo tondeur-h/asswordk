@@ -11,14 +11,18 @@ asswordk makes available a certain number of commands to store an account (new),
 delete an account (delete), list all accounts (list), display the content of a account (print), 
 purge the accounts database (purge), search a credential in the list (search).
 
-
+duplicate an entry, the faster way to enter multiple accounts for a unique url or computer(duplicate). 
 
  copy a password into the X clipboard (copy),browse an url that was register in a credential (browse).
 
-And change the mainpassword of your database accounts.
+And change the mainpassword of your database accounts(password).
 
-Installation :
-============
+see section 5 (how to use asswordk) for more details, or use the integrate help function help <cmd> to
+get help on a specific function.
+
+
+1 - Installation :
+    ============
 
 you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk-0.2.tgz
 untar it with command : tar -xf asswordk-0.2.tgz
@@ -34,8 +38,9 @@ code location => at :https://github.com/tondeur-h/asswordk
 For compiling this application you need to be installed with C++ compiler, g++ version 4.8 and install the crypto++
 developpment library libcrypto++-dev version 5.6.1-6
 
-Pre-requisite :
-==============
+
+2 - Pre-requisite :
+    =============
 "asswordk" use crypto++ lib to crypt mainpassword and all yours passwords.
 If you install this application from a debian package, libcrypto++9 will be installed too, with the dependences tags.
 
@@ -46,8 +51,15 @@ to compile, just enter in the release directory and run "make", enjoy...
 copy "asswork" application in a path directory of you system, and now see "after installation" paragraph...
 
 
-After installation :
-====================
+3 - Recommanded installation :
+    ========================
+xsel 1.2.0-2 debian package or higher
+xclip 0.12+svn84-4 debian package or higher
+xdg-utils 1.1.0~rc1
+
+
+4 - After installation :
+    ==================
 Before using asswordk application, make sure you have a file named "asswordk.db" into the directory /usr/share/asswordk.
 If not you can create it with this following commands.
 
@@ -71,8 +83,8 @@ If this file does not exist, "asswordk" application will be stop with a error me
 See "file_format.txt" documentation to know what there inside this file.
 
 
-How to use asswordk
-===================
+5 - How to use asswordk :
+    ===================
 
 just run asswordk...
 The first time you execute it, asswordk ask you a main password to protect your database accounts, give it one, a good and
@@ -81,27 +93,37 @@ strong password, this password will be crypted in SHA512 to protect it as strong
 As now you are protected, you can keyboarding help command to know all keywords commands that are avalaible. you can use too 
 help command follow by a command keyword, to have specific help on it.
 
-"new" command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).
+"new" or "add" command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).
 
-"list" command, allows you to listing all credentials there were in you database, just see you [id] login@url, not the password,
+"list" or "ls" command, allows you to listing all credentials there were in you database, just see you [id] login@url, not the password,
 the id number is very important, is usefull for some other command like print, delete etc...
 
-"print" command, allows you to printing on the screen all informations from a entry in your credrentials, quickly note this
+"print" or "p" command, allows you to printing on the screen all informations from a entry in your credrentials, quickly note this
 informations, because this informations will be cleaning from screen in five seconds. you must point to the id you want 
 to delete, if none, the first id (0) will be used.
 
-"modify" command, allows to modify an entry from your credentials, you must point to the id you want to delete, if none,
+"modify" or "mod" command, allows to modify an entry from your credentials, you must point to the id you want to delete, if none,
 the first id (0) will be used.
 
-"delete" command allows you to delete a entry from your credential, you must point to the id you want to delete, if none,
+"delete" or "del" command allows you to delete a entry from your credential, you must point to the id you want to delete, if none,
 the first id (0) will be used.
 
-"purge" command allows you to delete all entries from your credential, you must identifying you before for security.
+"purge" or "pg" command allows you to delete all entries from your credential, you must identifying you before for security.
 
-"search" command allows you to search an entry by is login, and list all of this that match your search string.
+"search" or "sh" command allows you to search an entry by is login or notes or url, and list all of this that match your 
+search string.
 
-"password" command allows you to change your main password, before changing it, you must identifying you, and so
+"password" or "pw" command allows you to change your main password, before changing it, you must identifying you, and so
 change your password, with a confirmation ask.
+
+"browse" or "br" command allows you if possible, the url field is a well url formated line, to run your default browser an 
+open this url. You must have installed xdg-open application before.
+
+"copy" or "cp" command allows you to copy in the X clipboard the password, you must have installed before one of this
+two applications xsel or xclip.
+
+"duplicate" or "dup", allows you to copy a entry and modify one or several fields in it. This is a fast way to enter
+multiple accounts on a site or machine.
 
 "clear" command, allows you to clean screen manually for confidentiality...
 
@@ -109,6 +131,7 @@ change your password, with a confirmation ask.
 
 "quit" command is bye bye command...
 
+==============================================
 
 Hope this application will be usefull!
 

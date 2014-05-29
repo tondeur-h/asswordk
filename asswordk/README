@@ -20,13 +20,16 @@ And change the mainpassword of your database accounts.
 Installation :
 ============
 
-you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk-0.1.tgz
-untar it with command : tar -xf asswordk-0.1.tgz
+you can download the binary and sources tarball at this url http://tondeurh.fr/software/asswordk-0.2.tgz
+untar it with command : tar -xf asswordk-0.2.tgz
 
-you can download the binary debian package at this url http://tondeurh.fr/software/asswordk-0.1_i386.deb
-depack archive with this command : dpkg -i asswordk-0.1.deb
+you can download the binary debian package at this url http://tondeurh.fr/software/asswordk-0.2_i386.deb
+depack archive with this command : dpkg -i asswordk-0.2.deb
 
-You can download the sources files from this url http://tondeurh.fr/software/asswordk-0.1.tgz
+You can download the sources files from this url http://tondeurh.fr/software/asswordk-0.2.tgz
+
+Or from the git repository (github)  => git://github.com/tondeur-h/asswordk.git 
+code location => at :https://github.com/tondeur-h/asswordk
 
 For compiling this application you need to be installed with C++ compiler, g++ version 4.8 and install the crypto++
 developpment library libcrypto++-dev version 5.6.1-6

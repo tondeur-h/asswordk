@@ -44,6 +44,7 @@ if (argc>1) {/*futur command line options not implemented a this time*/}
 if (argc>0)
 {
 	cons=new pawk::Console(); //create console object
+	cons->read_config_file(); //read config file before running
 	cons->cmd_loop(); //go to loop routine, this the main loop
 }
 

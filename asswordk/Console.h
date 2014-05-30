@@ -1,7 +1,7 @@
 /*
  * Console.h
  *
- *  Created on: 14 mai 2014
+ *  Created on: 31 mai 2014
  *      Author: Tondeur Herve
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -35,9 +35,10 @@ namespace pawk {
 struct struct_entry {
 	std::string login;
 	std::string password;
-	int pwlenght; //not uses
+	int pwlenght; //not use
 	std::string url;
 	std::string notes;
+	std::string container; //not use at this time
 };
 
 /*!
@@ -76,6 +77,7 @@ public:
 	bool identifying(); //ask to identify if not!
 	bool create_credential();//create a new credential
 	bool change_password();//for changing mainpassword by user
+	bool read_config_file();//read the default config file... at home/xxx/.asswork.cfg
 	virtual ~Console();
 };
 

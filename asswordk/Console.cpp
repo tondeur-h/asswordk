@@ -44,10 +44,25 @@ using std::normal_color;
 #include "Timer.h"
 
 
+#include "configawk.h"
+using pawk::configawk;
+
+
 namespace pawk {
 
 DBFile* db; //object dbfile
 
+//define here all global variable for config...
+configawk* cfgawk;
+int timeclr;
+int color_list;
+string hash;
+string ses;
+bool upcase;
+bool lowcase;
+bool number;
+bool OL;
+bool LL;
 
 
 /*!
@@ -103,7 +118,7 @@ return Str;
  * run default browser
  */
 void Console::browse_entry(int id){
-	string call_line="xdg-open ";
+	string call_line="xdg-open '";
 	//stop if entries is empty
 	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
 
@@ -111,7 +126,7 @@ void Console::browse_entry(int id){
 	if ((unsigned)id < entries->size()){
 		//construct the call command line
 	call_line+=entries->at(id).url;
-	call_line+=" 2>/dev/null &";
+	call_line+="' 2>/dev/null &";
 
 		//call the application
 	int retcall=std::system(call_line.c_str());
@@ -520,7 +535,7 @@ if ((unsigned int)id<(entries->size())){
 	std::normal_color();
 
 	//create the timer for auto clean screen
-	Timer clr_timer(5000,clr_auto);
+	Timer clr_timer(timeclr*1000,clr_auto);
 	//waiting loop
 	while(clr_timer.IsActive())clr_timer.Probe();
 
@@ -588,7 +603,7 @@ cout<<std::endl;
 
 
 /*!
- * metho that print general help and specific help
+ * method that print general help and specific help
  * @param value
  */
 void Console::help(string value){
@@ -1095,4 +1110,49 @@ pass2=std::getpass();
 	return true;
 }
 
+
+
+
+/*!
+ *Read config file if exist
+ *otherwise set default values...
+ * @return
+ */
+bool Console::read_config_file(){
+	//default values setting...
+	timeclr=5;
+
+	//create config object
+	cfgawk=new configawk();
+	//expand home directory...
+	string home=getenv ("HOME");
+	if (!cfgawk->init_cfg(home +"/.asswordk.cfg")) {return false;}
+	if (!cfgawk->verify_version()) {return false;}
+
+
+	//get root from the config file
+	const libconfig::Setting& root = cfgawk->cfg.getRoot();
+
+	//read config time clearscreen
+	cfgawk->read_misc(root);
+	timeclr=cfgawk->clrscr;
+
+	//read colors
+	cfgawk->read_colors(root);
+
+	//read encryption
+	cfgawk->read_encryption(root);
+
+
+	//read password rules
+	cfgawk->read_password(root);
+
+
+	//destroy config object to free memory...
+	delete cfgawk;
+	return true;
+}
+
 } /* namespace pawk */
+
+//End Of File

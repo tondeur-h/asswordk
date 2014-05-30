@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lcryptopp
+LIBS := -lcryptopp -lconfig++
 

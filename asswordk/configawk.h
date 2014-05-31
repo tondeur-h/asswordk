@@ -18,9 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-
 #ifndef CONFIGAWK_H_
 #define CONFIGAWK_H_
 
@@ -30,7 +27,6 @@
 
 
 namespace pawk {
-
 
 /*
  *class define for reading config file
@@ -45,19 +41,13 @@ public:
 	configawk(); //constructor init values
 	bool init_cfg(std::string path); //open and read config file
 	bool verify_version(); //verif magic word
-	void read_password(const libconfig::Setting& root); //read password rules
-	void read_misc(const libconfig::Setting& root); //read timer value for clrscr
-	void read_encryption(const libconfig::Setting& root); //read hash and ses type encryption
-	void read_colors(const libconfig::Setting& root); //list all colors to define...
+	int read_config_int(const libconfig::Setting& root,std::string group,std::string field,int default_value); //read integer...
+	bool read_config_bool(const libconfig::Setting& root,std::string group,std::string field,bool default_value); //read bool...
+	std::string read_config_string(const libconfig::Setting& root,std::string group,std::string field,std::string default_value); //read string...
 	virtual ~configawk();
 
-	//local attributes define...
-	bool upcase,lowcase,number,OL,LL;
-	int clrscr;
-	std::string ses, hash, list;
+	//local cfg...
 	libconfig::Config cfg;
-
-
 
 };
 

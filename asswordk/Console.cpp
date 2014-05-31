@@ -55,7 +55,8 @@ DBFile* db; //object dbfile
 //define here all global variable for config...
 configawk* cfgawk;
 int timeclr;
-int color_list;
+string color_list;
+string color_identify;
 string hash;
 string ses;
 bool upcase;
@@ -1036,7 +1037,7 @@ bool Console::identifying(){
 if (!identified){
 string temppass;
 	//ask password
-std::color("7"); //inverse video
+std::color(color_identify.c_str()); //inverse video
 cout<<"You must be identified to continue (enter your password follow by the enter key) ?";
 std::color("0"); //reset
 
@@ -1134,18 +1135,17 @@ bool Console::read_config_file(){
 	const libconfig::Setting& root = cfgawk->cfg.getRoot();
 
 	//read config time clearscreen
-	cfgawk->read_misc(root);
-	timeclr=cfgawk->clrscr;
+	timeclr=cfgawk->read_config_int(root,"misc","clrscr",5);
 
 	//read colors
-	cfgawk->read_colors(root);
+	color_identify=cfgawk->read_config_string(root,"colors","identify","35");
 
 	//read encryption
-	cfgawk->read_encryption(root);
+	//cfgawk->read_encryption(root);
 
 
 	//read password rules
-	cfgawk->read_password(root);
+	//cfgawk->read_password(root);
 
 
 	//destroy config object to free memory...

@@ -18,26 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #include "configawk.h"
 #include <iostream>
 
 namespace pawk {
 
 
-
 /*!
  * constructor, just define some variables
  */
-configawk::configawk() {
-	lowcase=true;
-	upcase=true;
-	OL=false;
-	LL=false;
-	number=true;
-	clrscr=5;
-}
+configawk::configawk() {}
 
 
 /*!
@@ -109,94 +99,65 @@ return true;
 
 
 /*!
- * read password rules generator
+ * read value in config file...
  * @param root
  */
-void configawk::read_password(const libconfig::Setting& root){
-	 // Read password config
-	  try
-	  {
-	    const libconfig::Setting &password = root["asswordk"]["password"];
-
-	    password.lookupValue("upcase",upcase);
-	    password.lookupValue("lowcase",lowcase);
-	    password.lookupValue("number",number);
-	    password.lookupValue("OL",OL);
-	    password.lookupValue("LL",LL);
-
-	  }
-	  catch(const libconfig::SettingNotFoundException &nfex)
-	  {
-	   upcase=true;
-	   lowcase=true;
-	   number=true;
-	   OL=false;
-	   LL=false;
-	  }
-}
-
-
-
-
-/*!
- * read timer clearscreen value...
- * @param root
- */
-void configawk::read_misc(const libconfig::Setting& root){
-	 // Read miscelleanous config
-	  try
-	  {
-	    const libconfig::Setting &misc = root["asswordk"]["misc"];
-	    misc.lookupValue("clrscr",clrscr);
-	    if (clrscr<1) {clrscr=1;}
-	  }
-	  catch(const libconfig::SettingNotFoundException &nfex)
-	  {
-		  clrscr=5;
-	  }
-}
-
-
-
-
-/*!
- * read encryption algorith to use...
- * @param root
- */
-void configawk::read_encryption(const libconfig::Setting& root){
-	 // Read encryption config
-	  try
-	  {
-	    const libconfig::Setting &encryption = root["asswordk"]["encryption"];
-
-	    encryption.lookupValue("hash",hash);
-	    encryption.lookupValue("ses",ses);
-	  }
-	  catch(const libconfig::SettingNotFoundException &nfex)
-	  {
-	   hash="SHA512";
-	   ses="AES";
-	  }
-}
-
-
-
-
-/*!
- * read color for displaying strings in console...
- * @param root
- */
-void configawk::read_colors(const libconfig::Setting& root){
+std::string configawk::read_config_string(const libconfig::Setting& root,std::string group,std::string field, std::string default_value){
 	 // Read colors config
+	std::string ret_val;
 	  try
 	  {
-	    const libconfig::Setting &colors = root["asswordk"]["colors"];
-	    colors.lookupValue("list",list);
+	    const libconfig::Setting &colors = root["asswordk"][group];
+	    colors.lookupValue(field,ret_val);
 	  }
 	  catch(const libconfig::SettingNotFoundException &nfex)
 	  {
-	   list="0"; //reset to normal, is the default value...
+	   ret_val=default_value; //reset to normal, is the default value...
 	  }
+return ret_val;
+}
+
+
+
+/*!
+ * read value in config file...
+ * @param root
+ */
+int configawk::read_config_int(const libconfig::Setting& root,std::string group,std::string field, int default_value){
+	 // Read colors config
+	int ret_val;
+	  try
+	  {
+	    const libconfig::Setting &colors = root["asswordk"][group];
+	    colors.lookupValue(field,ret_val);
+	  }
+	  catch(const libconfig::SettingNotFoundException &nfex)
+	  {
+	   ret_val=default_value; //reset to normal, is the default value...
+	  }
+return ret_val;
+}
+
+
+
+
+/*!
+ * read value in config file...
+ * @param root
+ */
+bool configawk::read_config_bool(const libconfig::Setting& root,std::string group,std::string field, bool default_value){
+	 // Read colors config
+	bool ret_val;
+	  try
+	  {
+	    const libconfig::Setting &colors = root["asswordk"][group];
+	    colors.lookupValue(field,ret_val);
+	  }
+	  catch(const libconfig::SettingNotFoundException &nfex)
+	  {
+	   ret_val=default_value; //reset to normal, is the default value...
+	  }
+return ret_val;
 }
 
 } /* namespace pawk */

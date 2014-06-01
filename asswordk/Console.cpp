@@ -55,10 +55,11 @@ DBFile* db; //object dbfile
 //define here all global variable for config...
 configawk* cfgawk;
 int timeclr;
-string color_list;
-string color_identify;
+string color_list, color_print, color_error, color_hello, color_identify, color_warning, color_help, color_success;
+
 string hash;
 string ses;
+
 bool upcase;
 bool lowcase;
 bool number;
@@ -121,7 +122,7 @@ return Str;
 void Console::browse_entry(int id){
 	string call_line="xdg-open '";
 	//stop if entries is empty
-	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
+	if (entries->size()<=0){std::color(color_error.c_str());cout<<"No entries in this credential!"<<endl;std::normal_color();return;}
 
 	//construct call adresses if id is ok
 	if ((unsigned)id < entries->size()){
@@ -131,17 +132,22 @@ void Console::browse_entry(int id){
 
 		//call the application
 	int retcall=std::system(call_line.c_str());
-		if (retcall!=0){
+		if (retcall!=0){std::color(color_error.c_str());
 			cout<<"Can not running "<<entries->at(id).url<<endl;
+			std::normal_color();
 		} else
 		{
+			std::color(color_success.c_str());
 			cout<<"Browser opening : "<<entries->at(id).url<<endl;
+			std::normal_color();
 		}
 
 	}
 	else
 	{
+		std::color(color_warning.c_str());
 		cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+		std::normal_color();
 	}
 } //end funtion browse
 
@@ -158,7 +164,7 @@ void Console::copy_entry_password(int id){
 	int rtcall=0;
 
 	//stop if entries is empty
-	if (entries->size()<=0){cout<<"No entries in this credential!"<<endl;return;}
+	if (entries->size()<=0){std::color(color_error.c_str());cout<<"No entries in this credential!"<<endl;std::normal_color();return;}
 
 	ABlowfish::awkBlowfish a;
 
@@ -181,19 +187,19 @@ void Console::copy_entry_password(int id){
 			rtcall=std::system(call_line.c_str());
 				//if fail said it to the user...
 				if (rtcall!=0){
-				std::color("7");
-				cout<<"Fail to copy password in the clipboard, xsel and xclip and not installed..."<<endl;
+				std::color(color_error.c_str());
+				cout<<"Fail to copy the password in the clipboard, xsel and xclip and not installed..."<<endl;
 				std::normal_color();
 				return;
 				} else
 				{
-				std::color("7");
-				cout<<"Password is copying in the clipboard..."<<endl;
+				std::color(color_success.c_str());
+				cout<<"The password is copied in the clipboard..."<<endl;
 				std::normal_color();
 				}
 		} else
 		{
-			std::color("7");
+			std::color(color_success.c_str());
 			cout<<"Password is copying in the clipboard..."<<endl;
 			std::normal_color();
 		}
@@ -201,7 +207,9 @@ void Console::copy_entry_password(int id){
 	}
 	else
 	{
+		std::color(color_warning.c_str());
 		cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+		std::normal_color();
 	}
 } //end funtion browse
 
@@ -226,7 +234,7 @@ string url;
 	while (login.empty()){
 	cout<<"Login ?";
 	getline(cin,login);
-	if (login.empty()){cout<<"Can not be empty!"<<endl;}
+	if (login.empty()){std::color(color_warning.c_str());cout<<"Can not be empty!"<<endl;std::normal_color();}
 	}
 
 	//get password can be empty
@@ -241,13 +249,13 @@ string url;
 			getline(cin,pwlenght);
 
 			pwl=(ascii2number(pwlenght)>0) & (ascii2number(pwlenght)>=4);
-			if (!pwl) {cout<<"It's not a number or is value is less than  4! retry..."<<endl;}
+			if (!pwl) {std::color(color_warning.c_str());cout<<"It's not a number or is value is less than  4! retry..."<<endl;std::normal_color();}
 			else
 			{
 				password=generate_password(ascii2number(pwlenght));
 				cout<<"The password generated is : "<<password<<endl;
-				std::color("31");
-				cout<<"Do not forget to notice it !"<<endl;
+				std::color(color_warning.c_str());
+				cout<<"Do not forget to note it !"<<endl;
 				std::normal_color();
 			}
 		}
@@ -257,7 +265,7 @@ string url;
 	while (url.empty()){
 	cout<<"Url or Machine name ?";
 	getline(cin,url);
-	if (url.empty()){cout<<"Cannot be empty!"<<endl;}
+	if (url.empty()){std::color(color_warning.c_str());cout<<"Cannot be empty!"<<endl;std::normal_color();}
 	}
 
 	//get notes can be empty
@@ -302,8 +310,10 @@ void Console::delete_entry(int id){
 		//erase entry
 		entries->erase(entries->begin()+id);
 		//say ok done
+		std::color(color_success.c_str());
 		cout<<"Delete entry "<<id<<" ok..."<<endl;
 		cout<<"Compacting id entries..."<<endl;
+		std::normal_color();
 		//print list of entries left...
 		list_entry(0);
 		//save values
@@ -318,7 +328,9 @@ void Console::delete_entry(int id){
 	}
 	else
 	{
-		cout<<"Any remaining entries in the credential, impossible satisfy your ask..."<<endl;
+		std::color(color_error.c_str());
+		cout<<"No remaining entries in the credential, impossible satisfy your ask..."<<endl;
+		std::normal_color();
 	}
 } //end delete function
 
@@ -338,7 +350,7 @@ count_line=0;
 
 for(unsigned int nbl=0;nbl<entries->size();nbl++){
 if (nbl>=max_id){
-	std::color("35");
+	std::color(color_list.c_str());
 	cout<<"id "<<nbl<<" - "<<entries->at(nbl).login<<"@"<<entries->at(nbl).url<<endl;
 	count_line++;
 	//***********************manage pages******************
@@ -356,7 +368,9 @@ if (nbl>=max_id){
 std::normal_color();
 //if entries vector is empty then signal to user.
 if (entries->size()==0){
+	std::color(color_warning.c_str());
 	cout<<"Entries list is empty..."<<endl;
+	std::normal_color();
 }
 
 } //end list function
@@ -370,18 +384,21 @@ void Console::duplicate_entry(int id){
 
 	//test id if exist in entries list
 	if ((unsigned int)id>(entries->size())){
+		std::color(color_error.c_str());
 		cout<<"This entry id does'nt exist...!\n";
+		std::normal_color();
 		return;
 	}
 
 	entry=entries->at(id);
 	int num_last=entries->size();
 	entries->push_back(entry);
+	std::color(color_success.c_str());
 	cout<<"Duplicate entry is done..."<<endl;
+	std::normal_color();
 
 	modify_entry(num_last);
-
-}
+} //end function duplicate
 
 
 /*!
@@ -398,7 +415,9 @@ void Console::modify_entry(int id){
 
 	//test id if exist in entries list
 	if ((unsigned int)id>(entries->size())){
+		std::color(color_error.c_str());
 		cout<<"This entry id does'nt exist...!\n";
+		std::normal_color();
 		return;
 	}
 	//get entry from entries
@@ -476,7 +495,9 @@ int nb_found=0;
 
 //test if search_entry not empty, if is it so quit
 	if (search_str.empty()){
+		std::color(color_error.c_str());
 		cout<<"You can not search for an empty string...Sorry!\n";
+		std::normal_color();
 		return;
 	}
 //for each entry in the vector print this that match
@@ -493,7 +514,7 @@ int nb_found=0;
 
 		if (found_login!=string::npos || found_url!=string::npos || found_notes!=string::npos){
 			//OK FOUND..
-			std::color("35");
+			std::color(color_list.c_str());
 			cout<<"id "<<it<<" - "<<entries->at(it).login<<"@"<<entries->at(it).url<<endl;
 			nb_found++;
 			std::normal_color();
@@ -502,16 +523,22 @@ int nb_found=0;
 
 	//give an answers
 	if (nb_found==1){
-		cout<<nb_found<<" entry that match your search \""<<search_str<<"\"."<<endl;
+		std::color(color_success.c_str());
+		cout<<nb_found<<" entry that match your search string \""<<search_str<<"\"."<<endl;
+		std::normal_color();
 	}
 	if (nb_found>1) {
-		cout<<nb_found<<" entries that match your search \""<<search_str<<"\"."<<endl;
+		std::color(color_success.c_str());
+		cout<<nb_found<<" entries that match your search string \""<<search_str<<"\"."<<endl;
+		std::normal_color();
 	}
 	if (nb_found==0)
 	{
-		cout<<"No entry match your search...!"<<endl;
+		std::color(color_warning.c_str());
+		cout<<"No entry match your search string...!"<<endl;
+		std::normal_color();
 	}
-}
+}//end function search
 
 
 
@@ -525,7 +552,7 @@ void Console::print_entry(int id){
 
 //if id is ok then show all
 if ((unsigned int)id<(entries->size())){
-	std::color("32");
+	std::color(color_print.c_str());
 	cout<<"ID : "<<id<<endl;
 	cout<<"Login : "<< entries->at(id).login<<endl;
 	ABlowfish::awkBlowfish crypto;
@@ -543,7 +570,9 @@ if ((unsigned int)id<(entries->size())){
 } else
 {
 	//oops id not right
+	std::color(color_error.c_str());
 	cout<<"Error, id not found..."<<endl;
+	std::normal_color();
 }
 } //end print function
 
@@ -555,7 +584,9 @@ if ((unsigned int)id<(entries->size())){
  */
 void Console::purge(){
 //ask before do to be sure and confirm with password ask
-cout<<"Before you leave purge all entries, please login with your password..."<<endl;
+	std::color(color_warning.c_str());
+	cout<<"Before you leave purge all entries, please login with your password..."<<endl;
+	std::normal_color();
 
 //fail identification for security
 identified=false;
@@ -571,12 +602,16 @@ if (identifying()){
 	//close the dbfile if all is reading...
 	delete db;
 
+	std::color(color_success.c_str());
 	cout<<"OK - Purge is done!\n"<<endl;
+	std::normal_color();
 }
 else
 {
 	//fail identifying => panic stop all
+	std::color(color_error.c_str());
 	cout<<"Sorry - As you fail to identifying you correctly, i stop working... :(!\n"<<endl;
+	std::normal_color();
 	exit(3);
 }
 } //end purge function
@@ -589,8 +624,7 @@ else
  */
 void Console::hello(){
 std::clrscr();
-color("7");
-color("32");
+color(color_hello.c_str());
 cout<<"asswordk version 0.2"<<std::endl;
 normal_color();
 cout<<"Passwords Manager Application"<<std::endl;
@@ -646,14 +680,14 @@ cmd=(value.compare("DUP")==0)?15:cmd;
 switch (cmd){
 case 1://help quit
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : quit(exit)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Type this command with no parameter to quit this application.\n"<<std::endl;
 		break;
 case 2: //help help
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : help <cmd>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Show details of a help command.\n<cmd> can take one of this values following :\n"<<std::endl;
@@ -663,7 +697,7 @@ case 2: //help help
 		break;
 case 3: //help list
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : list(ls) [id]\n"<<std::endl;
 		normal_color();
 		cout<<"=>Print the list of credentials.\n[id] point the credential number to begin printing, if id is not set, all credentials entries are printing."<<std::endl;
@@ -671,14 +705,14 @@ case 3: //help list
 		break;
 case 4: //help new
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : new(add)\n"<<std::endl;
 		normal_color();
 		cout<<"=>This command allows you to create a new credential entry.add is the short command.\n"<<std::endl;
 		break;
 case 5: //help delete
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : delete(del) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0."<<std::endl;
@@ -686,56 +720,56 @@ case 5: //help delete
 		break;
 case 6: //help modify
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : modify(mod) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\n"<<std::endl;
 		break;
 case 7: //help purge
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : purge(pg)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete all entries from credential\n Be carefull evething will be lost.\nYou must identifying yourself before."<<std::endl;
 		break;
 case 8: //help clear
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : clear(clr)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Clean screen for confidentiality.\n"<<std::endl;
 		break;
 case 9: //help hello
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : hello\n"<<std::endl;
 		normal_color();
 		cout<<"=>Show application name and copyright.\n"<<std::endl;
 		break;
 case 10: //help print
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : print(p) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clean in about 5 secondes after printing...\n"<<std::endl;
 		break;
 case 11: //help password
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : password(pw)\n"<<std::endl;
 		normal_color();
 		cout<<"=>Change the main password.\n"<<std::endl;
 		break;
 case 12: //help search
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : search(sh) <login>\n"<<std::endl;
 		normal_color();
 		cout<<"=>List all the credential that login or url or notes, match exactly with your search string.\n"<<std::endl;
 		break;
 case 13: //help browse
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : browse(br) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Open the url with the default browser of the choosen credential (if possible).\nIf id is not set, 0 is assume."<<std::endl;
@@ -743,7 +777,7 @@ case 13: //help browse
 		break;
 case 14: //help copy
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : copy(cp) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume."<<std::endl;
@@ -751,7 +785,7 @@ case 14: //help copy
 		break;
 case 15: //help duplicate
 		cout<<"Commands help\n============================"<<std::endl;
-		color("32");
+		color(color_help.c_str());
 		cout<<"Syntax : duplicate(dup) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Duplicate an entry and let you to modify it.\nIf id is not set, 0 is assume.\n"<<std::endl;
@@ -763,7 +797,7 @@ default: //general help
 	cout<<"purge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)\thelp\thello\n"<<std::endl;
 	cout<<"=>To get details on a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
-}
+}//end function hello
 
 
 
@@ -778,7 +812,9 @@ void Console::run_cmd(int cmdi,string value){
 	switch (cmdi){
 	case 1:
 			std::clrscr();
+			std::color(color_success.c_str());
 			cout<<"bye!"<<std::endl;
+			std::normal_color();
 			quit=true;
 			break;
 	case 2:
@@ -840,7 +876,7 @@ bool Console::change_password(){
 	//ask to be identified
 	//break identified relation...
 
-	cout<<"You want to change your main password...\n"<<endl;
+	cout<<"You wish to change your main password...\n"<<endl;
 	identified=false;
 	//ask again now
 	if (!identifying()){identified=true;return false;}
@@ -850,7 +886,9 @@ bool Console::change_password(){
 	pass1=std::getpass();
 		//if pass1 is empty stop
 		if (pass1.empty()){
+			std::color(color_error.c_str());
 			cout<<"This new password cannot be empty!..."<<endl;
+			std::normal_color();
 			return false;
 		}
 
@@ -859,7 +897,9 @@ bool Console::change_password(){
 	pass2=std::getpass();
 		//if pass1!=pass2 stop
 		if (pass1.compare(pass2)!=0){
+			std::color(color_error.c_str());
 		cout<<"Your confirm password is not the same!..."<<endl;
+		std::normal_color();
 		return false;
 	}
 
@@ -878,11 +918,11 @@ bool Console::change_password(){
 		delete db;
 
 		//success
-		std::color("36");
+		std::color(color_success.c_str());
 		cout<<"Your new password has been successfully changed, use this one next time."<<endl;
 		std::normal_color();
 	return true;
-}
+}//end function change password
 
 
 
@@ -939,7 +979,8 @@ run_cmd(cmd,value);
  * and initialize variables needed
  */
 Console::Console() {
-hello();
+read_config_file(); //read config file before running
+hello(); //print hello message
 prompt="asswordk#> ";
 quit=false; //boolean quit variable for quit prompt loop
 identified=false; //not identified by default
@@ -961,15 +1002,19 @@ void Console::cmd_loop(){
 
 	//if file not exist quit this function
 	if (!db->openForReadWrite("/usr/share/asswordk/asswordk.db")){
+		std::color(color_error.c_str());
 		cout<<"Error - Database file not found..."<<endl;
 		cout<<"You must create a database file, see documentation..."<<endl;
+		std::normal_color();
 		delete db;
 		return;
 	}
 
 	//test if mainpassword and header ok...
 	if (!db->testFileFormat()){
+		std::color(color_success.c_str());
 		cout<<"Credential is empty, create one please..."<<endl;	;
+		std::normal_color();
 		delete db;
 
 		//propose to create a new one...
@@ -984,7 +1029,7 @@ void Console::cmd_loop(){
 	exit(3);
 	} else
 	{//say hello
-		std::color("32");
+		std::color(color_hello.c_str());
 		cout<<"Hello - you're welcome!"<<endl;
 		std::normal_color();
 	}
@@ -1013,7 +1058,7 @@ void Console::cmd_loop(){
 		std::close_scanner(); //free memory from scanner function
 	}
 	} while (!quit);
-}
+}//end function cmd_loop
 
 
 
@@ -1024,7 +1069,7 @@ void Console::cmd_loop(){
 Console::~Console() {
 delete entries; //delete vector for all database...
 //delete db;
-}
+} //end destructor
 
 
 
@@ -1039,7 +1084,7 @@ string temppass;
 	//ask password
 std::color(color_identify.c_str()); //inverse video
 cout<<"You must be identified to continue (enter your password follow by the enter key) ?";
-std::color("0"); //reset
+std::normal_color(); //reset
 
 temppass=std::getpass();
 
@@ -1063,12 +1108,14 @@ temppass=std::getpass();
 	}
 	else
 	{
+		std::color(color_error.c_str());
 		cout<<"This password is not correct..."<<endl;
+		std::normal_color();
 		return false;
 	}
 }//end test identified
 return true;
-}
+} //end function identifying
 
 
 
@@ -1084,7 +1131,9 @@ cout<<"Please enter a password for protect your new credentials : (enter a passw
 pass1=std::getpass();
 	//if pass1 is empty stop
 	if (pass1.empty()){
+		std::color(color_error.c_str());
 		cout<<"This password cannot be empty!..."<<endl;
+		std::normal_color();
 		return false;
 	}
 
@@ -1093,7 +1142,9 @@ cout<<"Please confirm your password : (enter a password follow by the enter key)
 pass2=std::getpass();
 	//if pass1!=pass2 stop
 	if (pass1.compare(pass2)!=0){
+		std::color(color_error.c_str());
 	cout<<"Your confirm password is not the same!..."<<endl;
+	std::normal_color();
 	return false;
 }
 
@@ -1109,7 +1160,7 @@ pass2=std::getpass();
 	delete db;
 	//default return...
 	return true;
-}
+}//end function create_credential
 
 
 
@@ -1138,15 +1189,26 @@ bool Console::read_config_file(){
 	timeclr=cfgawk->read_config_int(root,"misc","clrscr",5);
 
 	//read colors
-	color_identify=cfgawk->read_config_string(root,"colors","identify","35");
+	color_identify=cfgawk->read_config_string(root,"colors","identify","37;7");
+	color_list=cfgawk->read_config_string(root,"colors","list","35");
+	color_error=cfgawk->read_config_string(root,"colors","error","31");
+	color_warning=cfgawk->read_config_string(root,"colors","warning","33;7");
+	color_success=cfgawk->read_config_string(root,"colors","success","32");
+	color_print=cfgawk->read_config_string(root,"colors","print","32");
+	color_hello=cfgawk->read_config_string(root,"colors","hello","32;7");
+	color_help=cfgawk->read_config_string(root,"colors","help","36");
 
 	//read encryption
-	//cfgawk->read_encryption(root);
+	hash=cfgawk->read_config_string(root,"encryption","hash","SHA512");
+	ses=cfgawk->read_config_string(root,"encryption","ses","AES");
 
 
 	//read password rules
-	//cfgawk->read_password(root);
-
+	upcase=cfgawk->read_config_bool(root,"password","upcase",true);
+	lowcase=cfgawk->read_config_bool(root,"password","lowcase",true);
+	number=cfgawk->read_config_bool(root,"password","number",true);
+	OL=cfgawk->read_config_bool(root,"password","OL",false);
+	LL=cfgawk->read_config_bool(root,"password","LL",false);
 
 	//destroy config object to free memory...
 	delete cfgawk;

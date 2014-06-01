@@ -10,6 +10,7 @@ CPP_SRCS += \
 ../Timer.cpp \
 ../awkBlowfish.cpp \
 ../configawk.cpp \
+../hashawk.cpp \
 ../main.cpp \
 ../tools.cpp 
 
@@ -20,6 +21,7 @@ OBJS += \
 ./Timer.o \
 ./awkBlowfish.o \
 ./configawk.o \
+./hashawk.o \
 ./main.o \
 ./tools.o 
 
@@ -30,6 +32,7 @@ CPP_DEPS += \
 ./Timer.d \
 ./awkBlowfish.d \
 ./configawk.d \
+./hashawk.d \
 ./main.d \
 ./tools.d 
 

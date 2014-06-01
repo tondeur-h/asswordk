@@ -203,47 +203,4 @@ string  recovered;
 
 } //end decrypt
 
-
-/*!
- * Hash a string with md5 algorithm
- * @param message
- * @return string coded md5
- */
-string awkBlowfish::md5(string message){
-MD5 hash;
-byte digest[ MD5::DIGESTSIZE ];
-
-hash.CalculateDigest( digest, (byte*) message.c_str(), message.length() );
-
-CryptoPP::HexEncoder encoder;
-std::string output;
-encoder.Attach( new StringSink( output ) );
-encoder.Put( digest, sizeof(digest) );
-encoder.MessageEnd();
-
-//std::cout <<"#-- output:"<<output << std::endl;
-return output;
-}
-
-/*!
- *  Hash a string with SHA512 algorithm
- * @param message
- * @return string coded sha512
- */
-string awkBlowfish::sha(string message){
-SHA512 hash;
-byte digest[ SHA512::DIGESTSIZE ];
-
-hash.CalculateDigest( digest, (byte*) message.c_str(), message.length() );
-
-CryptoPP::HexEncoder encoder;
-std::string output;
-encoder.Attach( new StringSink( output ) );
-encoder.Put( digest, sizeof(digest) );
-encoder.MessageEnd();
-
-//std::cout <<"#-- output:"<< output << std::endl;
-return output;
-}
-
 } /* namespace ABlowfish */

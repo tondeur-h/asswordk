@@ -49,8 +49,6 @@ public:
 	string ciphertoString(string cipher); //convert cipher format to C++ string
 	string stringtoCipher(string str); //convert C++ string to cipher format
 	string decrypt(string cipher, string key); //decrypt with blowfish algo
-	string md5(string message); //old md5 hash
-	string sha(string message); //sha512 hash
 	virtual ~awkBlowfish();
 };
 

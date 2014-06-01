@@ -47,6 +47,9 @@ using std::normal_color;
 #include "configawk.h"
 using pawk::configawk;
 
+#include "hashawk.h"
+using hashawk::hashawk;
+
 
 namespace pawk {
 
@@ -63,6 +66,7 @@ string ses;
 bool upcase;
 bool lowcase;
 bool number;
+bool special;
 bool OL;
 bool LL;
 
@@ -101,18 +105,40 @@ return std::strtol(numascii.c_str(),0,10);
  */
 std::string Console::generate_password (long int size){
 
-	static const char alphanum[] =
-	"0123456789"
-	"!@#$%^&*"
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	"abcdefghijklmnopqrstuvwxyz";
+    std::string Str;
+	string str_char;
+	string num="0123456789";
+	string up="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	string low="abcdefghijklmnopqrstuvwxyz";
+	string spec="!@#$%^&*";
 
-	int stringLength = sizeof(alphanum) - 1;
+	//select char to use from the choose in the config file.
+	if (number){str_char+=num;}
+	if (upcase){str_char+=up;}
+	if (lowcase){str_char+=low;}
+	if (special){str_char+=spec;}
+
+	//calculate the length of the string
+	int stringLength = str_char.length() - 1;
+
 	    srand(time(0));
-	    std::string Str;
-	    for(long int i = 0; i < size; ++i){Str += alphanum[rand() % stringLength];}
-return Str;
-}
+	    for(long int i = 0; i < size; ++i){
+	    	char letter=str_char[rand() % stringLength];
+	    	if (OL && (letter=='O' || letter=='0')){
+	    		//no O and zero
+	    		letter=str_char[rand() % stringLength];
+	    	}
+	    	if (LL && (letter=='l' || letter=='1')){
+	    		    		//no l and one
+	    		    		letter=str_char[rand() % stringLength];
+	    		    	}
+
+	    	Str += letter;
+
+	    }
+
+	    return Str;
+} //end function generaate_password
 
 
 
@@ -274,6 +300,7 @@ string url;
 
 
 //save informations
+	hashawk::hashawk b;
 	ABlowfish::awkBlowfish a;
 
 	entry.login=login;
@@ -287,7 +314,7 @@ string url;
 
 	db=new DBFile(); //create access dbfile
 	db->resetFile("/usr/share/asswordk/asswordk.db");
-	db->writeHeader(a.sha(mainpassword));
+	db->writeHeader(b.sha(mainpassword));
 	//write all entries left
 	db->writeAll(entries);
 	//close the dbfile if all is reading...
@@ -319,7 +346,7 @@ void Console::delete_entry(int id){
 		//save values
 		db=new DBFile(); //create access dbfile
 		db->resetFile("/usr/share/asswordk/asswordk.db");
-		ABlowfish::awkBlowfish a;
+		hashawk::hashawk a;
 		db->writeHeader(a.sha(mainpassword));
 		//write all entries left
 		db->writeAll(entries);
@@ -433,6 +460,7 @@ entry=entries->at(id);
 
 		//get password can be empty
 		ABlowfish::awkBlowfish a;
+		hashawk::hashawk b;
 
 		cout<<"Password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
 		getline(cin,password);
@@ -464,7 +492,7 @@ entry=entries->at(id);
 
 		db=new DBFile(); //create access dbfile
 		db->resetFile("/usr/share/asswordk/asswordk.db");
-		db->writeHeader(a.sha(mainpassword));
+		db->writeHeader(b.sha(mainpassword));
 		//write all entries left
 		db->writeAll(entries);
 		//close the dbfile if all is reading...
@@ -597,7 +625,7 @@ if (identifying()){
 
 	db=new DBFile(); //create access dbfile
 	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
-	ABlowfish::awkBlowfish a;
+	hashawk::hashawk a;
 	db->writeHeader(a.sha(mainpassword));
 	//close the dbfile if all is reading...
 	delete db;
@@ -904,7 +932,7 @@ bool Console::change_password(){
 	}
 
 		//hash in sha512 this password
-		ABlowfish::awkBlowfish sha;
+		hashawk::hashawk sha;
 		string encoded=sha.sha(pass1);
 		mainpassword=pass1;
 		identified=true;
@@ -1090,7 +1118,7 @@ temppass=std::getpass();
 
 
 	//encode it in sha512
-	ABlowfish::awkBlowfish sha;
+	hashawk::hashawk sha;
 	string encoded=sha.sha(temppass);
 
 	//read encoded string in database file
@@ -1149,7 +1177,7 @@ pass2=std::getpass();
 }
 
 	//hash in sha512 this password
-	ABlowfish::awkBlowfish sha;
+	hashawk::hashawk sha;
 	string encoded=sha.sha(pass1);
 
 
@@ -1207,6 +1235,7 @@ bool Console::read_config_file(){
 	upcase=cfgawk->read_config_bool(root,"password","upcase",true);
 	lowcase=cfgawk->read_config_bool(root,"password","lowcase",true);
 	number=cfgawk->read_config_bool(root,"password","number",true);
+	special=cfgawk->read_config_bool(root,"password","special",true);
 	OL=cfgawk->read_config_bool(root,"password","OL",false);
 	LL=cfgawk->read_config_bool(root,"password","LL",false);
 

@@ -2,6 +2,10 @@
 #magic string "#asswordk"
 #this magic string must be the first line of the file, this word is used to control that the file is good
 
+#type of hash and encryption
+hash=SHA512|MD5
+ses=BLOWFISH|AES
+
 the next line must be this entry in the bottom, represent the main password as used  as the key for the blowfish crypting...
 mainpassword=HASH SHA512
 

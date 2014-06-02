@@ -185,10 +185,12 @@ void DBFile::writeAll(std::vector<pawk::struct_entry>* v){
  * must be call first before writeall.
  * @param pass
  */
-void DBFile::writeHeader(string pass){
+void DBFile::writeHeader(string pass, string hash, string ses){
 *dbfile<<"#asswordk\n";
 *dbfile<<"#please do not edit manually\n";
 *dbfile<<currentDateTime()<<"\n\n";
+*dbfile<<"hash="<<hash<<"\n";
+*dbfile<<"ses="<<ses<<"\n\n";
 *dbfile<<"mainpassword="<<pass<<"\n\n";
 }
 

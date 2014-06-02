@@ -34,9 +34,6 @@ using std::string;
 using std::color;
 using std::normal_color;
 
-//crypto++ manager
-#include "awkBlowfish.h"
-
 //dbfile manage
 #include "DBFile.h"
 
@@ -49,6 +46,12 @@ using pawk::configawk;
 
 #include "hashawk.h"
 using hashawk::hashawk;
+
+//crypto++ manager
+#include "awkBlowfish.h"
+
+//crypto++ manager
+#include "AES.h"
 
 
 namespace pawk {
@@ -193,11 +196,17 @@ void Console::copy_entry_password(int id){
 	if (entries->size()<=0){std::color(color_error.c_str());cout<<"No entries in this credential!"<<endl;std::normal_color();return;}
 
 	ABlowfish::awkBlowfish a;
+	AAES::AES c;
 
 	//construct copy call xclip command line
 
 	if ((unsigned)id < entries->size()){
-	call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+	if (ses.compare("AES")==0) {
+		call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
+	} else
+	{
+		call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+	}
 
 	//try with xsel....
 		call_line+="' | xsel -bi 2>/dev/null";
@@ -207,7 +216,14 @@ void Console::copy_entry_password(int id){
 		//if fail with xsel try xclip
 		if (rtcall!=0){
 			call_line="echo '";
-			call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+
+			if (ses.compare("AES")==0) {
+					call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
+				} else
+				{
+					call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+				}
+
 			call_line+="' | xclip -i -selection clipboard 2>/dev/null";
 			//cout <<"# -- Call : "<<call_line<<endl;
 			rtcall=std::system(call_line.c_str());
@@ -302,9 +318,15 @@ string url;
 //save informations
 	hashawk::hashawk b;
 	ABlowfish::awkBlowfish a;
+	AAES::AES c;
 
 	entry.login=login;
-	entry.password=a.ciphertoString(a.crypt(password,mainpassword));
+	if (ses.compare("AES")==0) {
+			entry.password=c.ciphertoString(c.crypt(password,mainpassword));
+		} else
+		{
+			entry.password=a.ciphertoString(a.crypt(password,mainpassword));
+		}
 	entry.pwlenght=0;
 	entry.url=url;
 	entry.notes=notes;
@@ -314,7 +336,7 @@ string url;
 
 	db=new DBFile(); //create access dbfile
 	db->resetFile("/usr/share/asswordk/asswordk.db");
-	db->writeHeader(b.sha(mainpassword));
+	if (hash.compare("SHA512")==0) {db->writeHeader(b.sha(mainpassword),hash,ses);} else {db->writeHeader(b.md5(mainpassword),hash,ses);}
 	//write all entries left
 	db->writeAll(entries);
 	//close the dbfile if all is reading...
@@ -333,26 +355,46 @@ string url;
  * @param id
  */
 void Console::delete_entry(int id){
+	//test nb entries....
 	if (entries->size()>0){
-		//erase entry
-		entries->erase(entries->begin()+id);
-		//say ok done
-		std::color(color_success.c_str());
-		cout<<"Delete entry "<<id<<" ok..."<<endl;
-		cout<<"Compacting id entries..."<<endl;
-		std::normal_color();
-		//print list of entries left...
-		list_entry(0);
-		//save values
-		db=new DBFile(); //create access dbfile
-		db->resetFile("/usr/share/asswordk/asswordk.db");
-		hashawk::hashawk a;
-		db->writeHeader(a.sha(mainpassword));
-		//write all entries left
-		db->writeAll(entries);
-		//close the dbfile if all is reading...
-		delete db;
-	}
+
+		//ask before do to be sure and confirm with password ask
+			std::color(color_warning.c_str());
+			cout<<"Before i leave you to delete this entry, please login with your password..."<<endl;
+			std::normal_color();
+
+		//fail identification for security
+		identified=false;
+		//ask to be identified again
+		if (identifying()){
+			//erase entry
+			entries->erase(entries->begin()+id);
+			//say ok done
+			std::color(color_success.c_str());
+			cout<<"Delete entry "<<id<<" ok..."<<endl;
+			cout<<"Compacting id entries..."<<endl;
+			std::normal_color();
+			//print list of entries left...
+			list_entry(0);
+			//save values
+			db=new DBFile(); //create access dbfile
+			db->resetFile("/usr/share/asswordk/asswordk.db");
+			hashawk::hashawk a;
+			if (hash.compare("SHA512")==0) {db->writeHeader(a.sha(mainpassword),hash,ses);} else {db->writeHeader(a.md5(mainpassword),hash,ses);}
+			//write all entries left
+			db->writeAll(entries);
+			//close the dbfile if all is reading...
+			delete db;
+		}
+		else
+		{
+			//fail identifying => panic stop all
+			std::color(color_error.c_str());
+			cout<<"Sorry - As you fail to identifying you correctly, i refuse to delete it!\n"<<endl;
+			std::normal_color();
+			return;
+		}
+	} //end test number entries
 	else
 	{
 		std::color(color_error.c_str());
@@ -447,59 +489,96 @@ void Console::modify_entry(int id){
 		std::normal_color();
 		return;
 	}
-	//get entry from entries
-entry=entries->at(id);
 
-		//ask questions about entry
-		//get login cannot be empty...
-		cout<<"Login, keep blank for no change ("<<entry.login<<")?";
-		getline(cin,login);
-		if (login.empty()){login=entry.login;}
+	//ask before do to be sure and confirm with password ask
+			std::color(color_warning.c_str());
+			cout<<"Before i leave you to modify this entry, please login with your password..."<<endl;
+			std::normal_color();
 
+		//fail identification for security
+		identified=false;
+		//ask to be identified again
+			if (identifying()){
+		//get entry from entries
+		entry=entries->at(id);
 
-
-		//get password can be empty
-		ABlowfish::awkBlowfish a;
-		hashawk::hashawk b;
-
-		cout<<"Password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
-		getline(cin,password);
-		if (password.empty()){password=a.decrypt(a.stringtoCipher(entry.password),mainpassword);}
-
-
-		//get url cannot be empty
-		cout<<"Url or Machine, keep blank for no change ("<<entry.url<<")?";
-		getline(cin,url);
-		if (url.empty()){url=entry.url;}
+			//ask questions about entry
+			//get login cannot be empty...
+			cout<<"Login, keep blank for no change ("<<entry.login<<")?";
+			getline(cin,login);
+			if (login.empty()){login=entry.login;}
 
 
-		//get notes can be empty
-		cout<<"Notes, keep blank for no change ("<<entry.notes<<")?";
-		getline(cin,notes);
-		if (notes.empty()){notes=entry.notes;}
+
+			//get password can be empty
+			ABlowfish::awkBlowfish a;
+			AAES::AES c;
+			hashawk::hashawk b;
+
+			if (ses.compare("AES")==0){
+				cout<<"Password, keep blank for no change ("<<c.decrypt(c.stringtoCipher(entry.password),mainpassword)<<")?";
+			} else
+			{
+				cout<<"Password, keep blank for no change ("<<a.decrypt(a.stringtoCipher(entry.password),mainpassword)<<")?";
+			}
+
+			getline(cin,password);
+
+			if (ses.compare("AES")==0){
+				if (password.empty()){password=c.decrypt(c.stringtoCipher(entry.password),mainpassword);}
+			} else
+			{
+				if (password.empty()){password=a.decrypt(a.stringtoCipher(entry.password),mainpassword);}
+			}
+
+			//get url cannot be empty
+			cout<<"Url or Machine, keep blank for no change ("<<entry.url<<")?";
+			getline(cin,url);
+			if (url.empty()){url=entry.url;}
 
 
-	//save informations
+			//get notes can be empty
+			cout<<"Notes, keep blank for no change ("<<entry.notes<<")?";
+			getline(cin,notes);
+			if (notes.empty()){notes=entry.notes;}
 
-		entry.login=login;
-		entry.password=a.ciphertoString(a.crypt(password,mainpassword));
-		entry.pwlenght=0;
-		entry.url=url;
-		entry.notes=notes;
 
-		//change entry in the vector entries...
-		entries->at(id)=entry;
+		//save informations
 
-		db=new DBFile(); //create access dbfile
-		db->resetFile("/usr/share/asswordk/asswordk.db");
-		db->writeHeader(b.sha(mainpassword));
-		//write all entries left
-		db->writeAll(entries);
-		//close the dbfile if all is reading...
-		delete db;
+			entry.login=login;
+			if (ses.compare("AES")==0){
+				entry.password=c.ciphertoString(c.crypt(password,mainpassword));
+			} else
+			{
+				entry.password=a.ciphertoString(a.crypt(password,mainpassword));
+			}
 
-		//show modifications...
-		list_entry(0);
+			entry.pwlenght=0;
+			entry.url=url;
+			entry.notes=notes;
+
+			//change entry in the vector entries...
+			entries->at(id)=entry;
+
+			db=new DBFile(); //create access dbfile
+			db->resetFile("/usr/share/asswordk/asswordk.db");
+			if (hash.compare("SHA512")==0) {db->writeHeader(b.sha(mainpassword),hash,ses);} else {db->writeHeader(b.md5(mainpassword),hash,ses);}
+			//write all entries left
+			db->writeAll(entries);
+			//close the dbfile if all is reading...
+			delete db;
+
+			//show modifications...
+			list_entry(0);
+		}
+		else
+		{
+			//fail identifying => panic stop all
+			std::color(color_error.c_str());
+			cout<<"Sorry - As you fail to identifying you correctly, i refuse to delete it!\n"<<endl;
+			std::normal_color();
+			return;
+		}
 } //end modify function
 
 
@@ -583,9 +662,18 @@ if ((unsigned int)id<(entries->size())){
 	std::color(color_print.c_str());
 	cout<<"ID : "<<id<<endl;
 	cout<<"Login : "<< entries->at(id).login<<endl;
+
 	ABlowfish::awkBlowfish crypto;
+	AAES::AES cryptoA;
+
 	//decrypt password for user
-	cout<<"Password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+	if (ses.compare("AES")==0){
+		cout<<"Password : "<< cryptoA.decrypt(cryptoA.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+	} else
+	{
+		cout<<"Password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+	}
+
 	cout<<"Url :"<<entries->at(id).url<<endl;
 	cout<<"Notes :"<<entries->at(id).notes<<endl;
 	std::normal_color();
@@ -613,7 +701,7 @@ if ((unsigned int)id<(entries->size())){
 void Console::purge(){
 //ask before do to be sure and confirm with password ask
 	std::color(color_warning.c_str());
-	cout<<"Before you leave purge all entries, please login with your password..."<<endl;
+	cout<<"Before i leave you to purge all entries, please login with your password..."<<endl;
 	std::normal_color();
 
 //fail identification for security
@@ -626,7 +714,7 @@ if (identifying()){
 	db=new DBFile(); //create access dbfile
 	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
 	hashawk::hashawk a;
-	db->writeHeader(a.sha(mainpassword));
+	if (hash.compare("SHA512")==0) {db->writeHeader(a.sha(mainpassword),hash,ses);} else {db->writeHeader(a.md5(mainpassword),hash,ses);}
 	//close the dbfile if all is reading...
 	delete db;
 
@@ -932,8 +1020,9 @@ bool Console::change_password(){
 	}
 
 		//hash in sha512 this password
-		hashawk::hashawk sha;
-		string encoded=sha.sha(pass1);
+		hashawk::hashawk a;
+		string encoded;
+		if (hash.compare("SHA512")==0) {encoded=a.sha(pass1);} else {encoded=a.md5(pass1);}
 		mainpassword=pass1;
 		identified=true;
 
@@ -941,7 +1030,7 @@ bool Console::change_password(){
 		//create the dbfile ans save coded password
 		db=new pawk::DBFile();
 		db->openForReadWrite("/usr/share/asswordk/asswordk.db");
-		db->writeHeader(encoded); //write header for mainpassword
+		db->writeHeader(encoded,hash,ses); //write header for mainpassword
 		db->writeAll(entries); //save all credentials too
 		delete db;
 
@@ -1049,6 +1138,15 @@ void Console::cmd_loop(){
 		if 	(!create_credential()){return;}
 	}
 
+	//test and set HASH and SES encryption
+		db=new pawk::DBFile();
+		db->openForReadWrite("/usr/share/asswordk/asswordk.db");
+		string readpass;
+		hash=db->readValue("hash");
+		ses=db->readValue("ses");
+		delete db;
+		cout<<"Database encryption format is "<<hash<<"/"<<ses<<endl<<endl;
+
 
 	//before continuing, user must be loged...
 	if (!identifying()){
@@ -1118,8 +1216,10 @@ temppass=std::getpass();
 
 
 	//encode it in sha512
-	hashawk::hashawk sha;
-	string encoded=sha.sha(temppass);
+	hashawk::hashawk a;
+	string encoded;
+
+	if (hash.compare("SHA512")==0) {encoded=a.sha(temppass);} else {encoded=a.md5(temppass);}
 
 	//read encoded string in database file
 	db=new pawk::DBFile();
@@ -1177,14 +1277,15 @@ pass2=std::getpass();
 }
 
 	//hash in sha512 this password
-	hashawk::hashawk sha;
-	string encoded=sha.sha(pass1);
+	hashawk::hashawk a;
+	string encoded;
+	if (hash.compare("SHA512")==0) {encoded=a.sha(pass1);} else {encoded=a.md5(pass1);}
 
 
 	//create the dbfile ans save coded password
 	db=new pawk::DBFile();
 	db->openForReadWrite("/usr/share/asswordk/asswordk.db");
-	db->writeHeader(encoded);
+	db->writeHeader(encoded,hash,ses);
 	delete db;
 	//default return...
 	return true;

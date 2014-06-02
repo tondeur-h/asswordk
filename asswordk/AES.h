@@ -51,8 +51,8 @@ public:
 	AES(); //initiate de IV
 	string crypt(std::string plaintext, std::string key); //crypt a plaintext with the key
 	string decrypt(string cipher, string key); //decrypt a cipher format with the key
-	string ciphertostring(string cipher); //convert cipher format to string
-	string stringtocipher(string str); //convert string format to cipher
+	string ciphertoString(string cipher); //convert cipher format to string
+	string stringtoCipher(string str); //convert string format to cipher
 	virtual ~AES();
 };
 

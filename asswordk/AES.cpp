@@ -78,7 +78,7 @@ return decryptedtext;
  * @param cipher
  * @return string hex
  */
-string AES::ciphertostring(string cipher){
+string AES::ciphertoString(string cipher){
 // generate encoded
 	string encoded;
 
@@ -97,7 +97,7 @@ return encoded;
  * @param str
  * @return string
  */
-string AES::stringtocipher(string str){
+string AES::stringtoCipher(string str){
 // generate encoded
 	string encoded;
 

@@ -51,7 +51,7 @@ class DBFile {
 	string readValue(string param); //read a parameter
 	bool readAll(std::vector<pawk::struct_entry>* v); //read all entries and sent into a vector + password
 	void writeAll(std::vector<pawk::struct_entry>* v); //write all entries infile + password
-	void writeHeader(string pass); //write file format and main password
+	void writeHeader(string pass, string hash, string ses); //write file format and main password
 	virtual ~DBFile(); //close streamfile
 };
 

@@ -188,70 +188,90 @@ void Console::browse_entry(int id){
  */
 void Console::copy_entry_password(int id){
 
-
-	string call_line="echo '";
-	int rtcall=0;
-
 	//stop if entries is empty
-	if (entries->size()<=0){std::color(color_error.c_str());cout<<"No entries in this credential!"<<endl;std::normal_color();return;}
+		if (entries->size()<=0){std::color(color_error.c_str());cout<<"No entries in this credential!"<<endl;std::normal_color();return;}
 
-	ABlowfish::awkBlowfish a;
-	AAES::AES c;
 
-	//construct copy call xclip command line
+	//ask before do to be sure and confirm with password ask
+		std::color(color_warning.c_str());
+		cout<<"Before i leave you to modify this entry, please login with your password..."<<endl;
+		std::normal_color();
 
-	if ((unsigned)id < entries->size()){
-	if (ses.compare("AES")==0) {
-		call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
-	} else
-	{
-		call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
-	}
 
-	//try with xsel....
-		call_line+="' | xsel -bi 2>/dev/null";
-		//cout <<"# -- Call : "<<call_line<<endl;
-		rtcall=std::system(call_line.c_str());
+	//fail identification for security
+	identified=false;
+	//ask to be identified again
+	if (identifying()){
 
-		//if fail with xsel try xclip
-		if (rtcall!=0){
-			call_line="echo '";
+			string call_line="echo '";
+			int rtcall=0;
 
+			ABlowfish::awkBlowfish a;
+			AAES::AES c;
+
+			//construct copy call xclip command line
+
+			if ((unsigned)id < entries->size()){
 			if (ses.compare("AES")==0) {
-					call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
-				} else
-				{
-					call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
-				}
+				call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
+			} else
+			{
+				call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+			}
 
-			call_line+="' | xclip -i -selection clipboard 2>/dev/null";
-			//cout <<"# -- Call : "<<call_line<<endl;
-			rtcall=std::system(call_line.c_str());
-				//if fail said it to the user...
+			//try with xsel....
+				call_line+="' | xsel -bi 2>/dev/null";
+				//cout <<"# -- Call : "<<call_line<<endl;
+				rtcall=std::system(call_line.c_str());
+
+				//if fail with xsel try xclip
 				if (rtcall!=0){
-				std::color(color_error.c_str());
-				cout<<"Fail to copy the password in the clipboard, xsel and xclip and not installed..."<<endl;
-				std::normal_color();
-				return;
+					call_line="echo '";
+
+					if (ses.compare("AES")==0) {
+							call_line+=c.decrypt(c.stringtoCipher(entries->at(id).password), mainpassword);
+						} else
+						{
+							call_line+=a.decrypt(a.stringtoCipher(entries->at(id).password), mainpassword);
+						}
+
+					call_line+="' | xclip -i -selection clipboard 2>/dev/null";
+					//cout <<"# -- Call : "<<call_line<<endl;
+					rtcall=std::system(call_line.c_str());
+						//if fail said it to the user...
+						if (rtcall!=0){
+						std::color(color_error.c_str());
+						cout<<"Fail to copy the password in the clipboard, xsel and xclip and not installed..."<<endl;
+						std::normal_color();
+						return;
+						} else
+						{
+						std::color(color_success.c_str());
+						cout<<"The password is copied in the clipboard..."<<endl;
+						std::normal_color();
+						}
 				} else
 				{
-				std::color(color_success.c_str());
-				cout<<"The password is copied in the clipboard..."<<endl;
-				std::normal_color();
+					std::color(color_success.c_str());
+					cout<<"Password is copying in the clipboard..."<<endl;
+					std::normal_color();
 				}
-		} else
-		{
-			std::color(color_success.c_str());
-			cout<<"Password is copying in the clipboard..."<<endl;
-			std::normal_color();
-		}
 
+			}
+			else
+			{
+				std::color(color_warning.c_str());
+				cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+				std::normal_color();
+			}
 	}
 	else
 	{
-		std::color(color_warning.c_str());
-		cout<<"This entry "<<id<<" can not be used for this operation!"<<endl;
+		//fail identifying => panic stop all
+		std::color(color_error.c_str());
+		cout<<"Sorry - As you fail to identifying you correctly, i refuse to copy it!\n"<<endl;
 		std::normal_color();
+		return;
 	}
 } //end funtion browse
 
@@ -659,29 +679,51 @@ void Console::print_entry(int id){
 
 //if id is ok then show all
 if ((unsigned int)id<(entries->size())){
-	std::color(color_print.c_str());
-	cout<<"ID : "<<id<<endl;
-	cout<<"Login : "<< entries->at(id).login<<endl;
 
-	ABlowfish::awkBlowfish crypto;
-	AAES::AES cryptoA;
-
-	//decrypt password for user
-	if (ses.compare("AES")==0){
-		cout<<"Password : "<< cryptoA.decrypt(cryptoA.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
-	} else
-	{
-		cout<<"Password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
-	}
-
-	cout<<"Url :"<<entries->at(id).url<<endl;
-	cout<<"Notes :"<<entries->at(id).notes<<endl;
+	//ask before do to be sure and confirm with password ask
+	std::color(color_warning.c_str());
+	cout<<"Before i leave you to modify this entry, please login with your password..."<<endl;
 	std::normal_color();
 
-	//create the timer for auto clean screen
-	Timer clr_timer(timeclr*1000,clr_auto);
-	//waiting loop
-	while(clr_timer.IsActive())clr_timer.Probe();
+
+	//fail identification for security
+	identified=false;
+	//ask to be identified again
+	if (identifying()){
+
+			std::color(color_print.c_str());
+			cout<<"ID : "<<id<<endl;
+			cout<<"Login : "<< entries->at(id).login<<endl;
+
+			ABlowfish::awkBlowfish crypto;
+			AAES::AES cryptoA;
+
+			//decrypt password for user
+			if (ses.compare("AES")==0){
+				cout<<"Password : "<< cryptoA.decrypt(cryptoA.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+			} else
+			{
+				cout<<"Password : "<< crypto.decrypt(crypto.stringtoCipher(entries->at(id).password),mainpassword)<<endl;
+			}
+
+			cout<<"Url :"<<entries->at(id).url<<endl;
+			cout<<"Notes :"<<entries->at(id).notes<<endl;
+			std::normal_color();
+
+			//create the timer for auto clean screen
+			Timer clr_timer(timeclr*1000,clr_auto);
+			//waiting loop
+			while(clr_timer.IsActive())clr_timer.Probe();
+
+	}
+	else
+	{
+		//fail identifying => panic stop all
+		std::color(color_error.c_str());
+		cout<<"Sorry - As you fail to identifying you correctly, i refuse to print it!\n"<<endl;
+		std::normal_color();
+		return;
+	}
 
 } else
 {
@@ -832,14 +874,14 @@ case 5: //help delete
 		cout<<"Syntax : delete(del) <id>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Delete a credential entry from the list of credentials, id must be the number of the credential to delete.\nUse \"list\" command before to get the id number.\nIf id is ommited, assume 0."<<std::endl;
-		cout<<"You can Use the short command del as well.\n"<<endl;
+		cout<<"You can Use the short command del as well.\nYou must identifying yourself before deleting entry."<<endl;
 		break;
 case 6: //help modify
 		cout<<"Commands help\n============================"<<std::endl;
 		color(color_help.c_str());
 		cout<<"Syntax : modify(mod) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\n"<<std::endl;
+		cout<<"=>Modify an entry from the credentials list, id must be the number of the credential to modify.\nUse \"list\" command before to get the id number.\nYou must identifying yourself before."<<std::endl;
 		break;
 case 7: //help purge
 		cout<<"Commands help\n============================"<<std::endl;
@@ -867,7 +909,7 @@ case 10: //help print
 		color(color_help.c_str());
 		cout<<"Syntax : print(p) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clean in about 5 secondes after printing...\n"<<std::endl;
+		cout<<"=>Print the detail of an entry from the credentials, id must be the number of the credential to print.\nUse \"list\" command before to get the id number.\nCare that screen will be clean in about 5 secondes after printing...\nYou must identifying yourself before printing entry."<<std::endl;
 		break;
 case 11: //help password
 		cout<<"Commands help\n============================"<<std::endl;
@@ -896,7 +938,7 @@ case 14: //help copy
 		color(color_help.c_str());
 		cout<<"Syntax : copy(cp) <id>\n"<<std::endl;
 		normal_color();
-		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume."<<std::endl;
+		cout<<"=>Copy the password of the application in the X clipboard if xclip application is installed (if possible).\nIf id is not set, 0 is assume.\nYou must identifying yourself before copy a password."<<std::endl;
 		cout<<"You must have xsel or xclip installed on your system.\n"<<endl;
 		break;
 case 15: //help duplicate

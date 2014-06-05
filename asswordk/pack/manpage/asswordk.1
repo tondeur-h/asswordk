@@ -1,0 +1,213 @@
+.TH asswordk 1 "JUNE 2014" Linux "User Manuals"
+
+.SH NAME
+asswordk \- Password Manager for console command line
+
+.SH SYNOPSIS
+.B asswordk {no options}
+
+.SH DESCRIPTION
+.B asswordk
+is an application for managed your passwords from the console
+command line.
+
+.SH USER COMMANDS
+
+.I Most of commands have a long and short word version.
+
+.B new or add
+ Command, allows you to create a new account, an account need
+ (login,password,url or machine name, notes for your mind).
+
+.B list or ls
+ Command, allows you to listing all credentials there were in you database,
+ just see you [id] login@url, not the password,
+ the id number is very important, is usefull for some other command like print, delete etc...
+
+.B print or p
+ Command, allows you to printing on the screen all informations from a entry in your credrentials,
+ quickly note this informations, because this informations will be cleaning from screen in five seconds.
+ You must point to the id you want to delete, if none, the first id (0) will be used.
+
+.B modify or mod
+ Command, allows to modify an entry from your credentials, you must point to the id you want to delete,
+ if none, the first id (0) will be used.
+
+.B delete or del
+ Command allows you to delete a entry from your credential, you must point to the id you want to delete,
+ if none, the first id (0) will be used.
+
+.B purge or pg
+ Command allows you to delete all entries from your credential, you must identifying you before for security.
+
+.B search or sh
+ Command allows you to search an entry by is login or notes or url, and list all of this that match your search string.
+
+.B password or pw
+ Command allows you to change your main password, before changing it, you must identifying you, and so
+ change your password, with a confirmation ask.
+
+.B browse or br
+ Command allows you if possible, the url field is a well url formated line, to run your default browser an 
+ open this url. You must have installed xdg-open application before.
+
+.B copy or cp
+ Command allows you to copy in the X clipboard the password, you must have installed before one of this
+ two applications xsel or xclip.
+
+.B duplicate or dup
+ Allows you to copy a entry and modify one or several fields in it. This is a fast way to enter multiple accounts
+ on a site or machine.
+
+.B clear or clr
+ Command, allows you to clean screen manually for confidentiality...
+
+.B hello
+ Command show you the name and copyright of this application.
+
+.B quit
+ Command is bye bye command...
+
+
+.SH DATABASE FILE FORMAT
+.B The database file must be named "asswordk.db", it's in  ascii format, and must be in 
+.I /usr/share/asswordk/
+.B directory.
+
+.B Content of this file :
+
+First, the magic string is "#asswordk"
+
+This magic string must be the first line of the file, this word is used to control that the file is right.
+
+After the magic word, you must find the format of the hash algorythm used to encrypt your main password.
+This must begin with the string "hash=" and can take one of this values :
+
+\- SHA512 or MD5
+
+As well, you must find the format of the sysmetric encryption algorythm uses to encrypt all the password of your
+credentials.
+This must begin with the the string "ses=" and take one of this values :
+
+\- BLOWFISH or AES
+
+ The next line must be the mainpassword entry , represent the main password used to protect access
+ to your database and used too as the encryption key for blowfish|AES algorythm...
+
+.B mainpassword=
+.B [
+.I HASHHEX
+.B ]
+
+The next lines must be composed with all credentials entries.
+.br
+Begining of the info block must begin with this mark
+.br
+.B [BEGIN]
+ \- This pattern can be repeated...
+ id=Id for entry (int)
+ login= login user (string) 
+ password= crypt(blowfish) (string) 
+ url= (string)
+ notes= (string)
+ ...
+ \- repeat it as many time as needed
+.br
+.B [END]
+
+The [END] tag mark the ending patterns
+
+ Users must be able to read and write it!
+ Permission must be "wr" for users...
+
+.SH CONFIG FILE
+.B Example of a config file
+
+.RE 
+This file must be in your 
+.B home directory.
+.P
+ # Magic word to verify integrity of the cfg file
+ application = "asswordk";
+ version = "0.2";
+
+
+#configuration part
+
+asswordk={
+ 
+	/* param color must be a const char *, empty (same as "0") or with
+     several values separate with ; among
+         0  reinit         1  higkt intensity (caracters)
+         5  blinking       7  reverse video
+         30, 31, 32, 33, 34, 35, 36, 37 caracters colors
+         40, 41, 42, 43, 44, 45, 46, 47 background color
+
+         colors, RGB following logic, respectively being
+         black, red, green, yellow, blue, magenta, cyan and white 
+    */
+
+
+ colors=
+ {
+ #color for listing function
+ list="35";
+ #color for identifying ask
+ identify="37;7";
+ #color for printing function
+ print="32";
+
+ #color for errors/warning/success messages
+ error="31";
+ warning="33;7";
+ success="32";
+
+ #color for hello and help messages
+ hello="32;7";
+ help="36";
+ };
+	
+	
+ encryption=
+ {
+ /*hash can take one of this values :
+ MD5
+ SHA512
+ */
+ hash="SHA512";
+	
+ /*ses (symetric encryption standard) can take one of this values:
+ AES
+ BLOWFISH
+ */
+ ses="AES";
+ };
+				
+ password=
+ {
+ #each of this values can be true or false.
+ upcase=true;
+ lowcase=true;
+ number=true;
+ special=true;
+ OL=false;
+ LL=false;
+ };
+	
+ misc=
+ {
+ #time in second waiting before clear the screen...
+ clrscr=10;
+ };
+
+ };
+
+
+.SH BUGS
+Report bug at Tondeur Herve <tondeur.herve@yahoo.fr> With the subject [asswordk BUG REPORT]
+
+.SH AUTHOR
+.PP
+Tondeur Herve <tondeur.herve@yahoo.fr>
+.br
+Copyright (c) 2014 under GPL V3 license.

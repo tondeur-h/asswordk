@@ -289,6 +289,7 @@ string pwlenght;
 bool pwl;
 string notes;
 string url;
+string container;
 
 
 	//ask questions about entry
@@ -335,6 +336,11 @@ string url;
 	getline(cin,notes);
 
 
+	//get container can be empty
+		cout<<"Container class of this connection ?";
+		getline(cin,container);
+
+
 //save informations
 	hashawk::hashawk b;
 	ABlowfish::awkBlowfish a;
@@ -350,6 +356,7 @@ string url;
 	entry.pwlenght=0;
 	entry.url=url;
 	entry.notes=notes;
+	entry.container=container;
 
 	//add to vector entries this entry...
 	entries->push_back(entry);
@@ -440,7 +447,7 @@ count_line=0;
 for(unsigned int nbl=0;nbl<entries->size();nbl++){
 if (nbl>=max_id){
 	std::color(color_list.c_str());
-	cout<<"id "<<nbl<<" - "<<entries->at(nbl).login<<"@"<<entries->at(nbl).url<<endl;
+	cout<<"id "<<nbl<<" - "<<entries->at(nbl).login<<"@"<<entries->at(nbl).url<<" // "<<entries->at(nbl).container<<endl;
 	count_line++;
 	//***********************manage pages******************
 		if(count_line>=20){
@@ -463,6 +470,59 @@ if (entries->size()==0){
 }
 
 } //end list function
+
+
+
+/*!
+ * function to list all the entry from db,
+ * just show login@url/computer
+ * @param id
+ */
+void Console::listcont_entry(std::string ctn){
+
+int count_line;
+string container;
+string::size_type found_container;
+
+
+count_line=0;
+
+for(unsigned int nbl=0;nbl<entries->size();nbl++){
+
+	//search container match...
+	container=entries->at(nbl).container;
+	found_container=container.find(ctn);
+
+	//cout<<"#-- id :"<<nbl<<" "<<container<<endl;
+
+	//OK FOUND so list
+	if (found_container!=string::npos){
+	std::color(color_list.c_str());
+	cout<<"id "<<nbl<<" - "<<entries->at(nbl).login<<"@"<<entries->at(nbl).url<<" // "<<entries->at(nbl).container<<endl;
+	count_line++;
+	/***********************manage pages******************/
+		if(count_line>=20){
+			std::normal_color();
+			cout<<"Press \"ENTER KEY\" for next page."<<endl;
+			cin.ignore(1);
+			std::clrscr();
+			count_line=0;
+		}
+	/*****************************************************/
+}
+}
+//return to normal color
+std::normal_color();
+//if entries vector is empty then signal to user.
+if (entries->size()==0){
+	std::color(color_warning.c_str());
+	cout<<"Entries list is empty..."<<endl;
+	std::normal_color();
+}
+
+} //end list function
+
+
 
 
 /*!
@@ -500,6 +560,7 @@ void Console::modify_entry(int id){
 	string password;
 	string notes;
 	string url;
+	string container;
 
 
 	//test id if exist in entries list
@@ -563,6 +624,12 @@ void Console::modify_entry(int id){
 			if (notes.empty()){notes=entry.notes;}
 
 
+			//get container can be empty
+			cout<<"Container, keep blank for no change ("<<entry.container<<")?";
+			getline(cin,container);
+			if (container.empty()){container=entry.container;}
+
+
 		//save informations
 
 			entry.login=login;
@@ -576,6 +643,7 @@ void Console::modify_entry(int id){
 			entry.pwlenght=0;
 			entry.url=url;
 			entry.notes=notes;
+			entry.container=container;
 
 			//change entry in the vector entries...
 			entries->at(id)=entry;
@@ -616,6 +684,9 @@ string url;
 string::size_type found_url;
 string notes;
 string::size_type found_notes;
+string container;
+string::size_type found_container;
+
 
 //int represent the number of found lines...
 int nb_found=0;
@@ -634,15 +705,17 @@ int nb_found=0;
 		login=entries->at(it).login;
 		url=entries->at(it).url;
 		notes=entries->at(it).notes;
+		container=entries->at(it).container;
 
 		found_login=login.find(search_str);
 		found_url=url.find(search_str);
 		found_notes=notes.find(search_str);
+		found_container=container.find(search_str);
 
-		if (found_login!=string::npos || found_url!=string::npos || found_notes!=string::npos){
+		if (found_login!=string::npos || found_url!=string::npos || found_notes!=string::npos || found_container!=string::npos){
 			//OK FOUND..
 			std::color(color_list.c_str());
-			cout<<"id "<<it<<" - "<<entries->at(it).login<<"@"<<entries->at(it).url<<endl;
+			cout<<"id "<<it<<" - "<<entries->at(it).login<<"@"<<entries->at(it).url<<" // "<<entries->at(it).container<<endl;
 			nb_found++;
 			std::normal_color();
 		} //end if
@@ -708,6 +781,7 @@ if ((unsigned int)id<(entries->size())){
 
 			cout<<"Url :"<<entries->at(id).url<<endl;
 			cout<<"Notes :"<<entries->at(id).notes<<endl;
+			cout<<"Container : "<<entries->at(id).container<<endl;
 			std::normal_color();
 
 			//create the timer for auto clean screen
@@ -783,7 +857,7 @@ else
 void Console::hello(){
 std::clrscr();
 color(color_hello.c_str());
-cout<<"asswordk version 0.2"<<std::endl;
+cout<<"asswordk version 0.3"<<std::endl;
 normal_color();
 cout<<"Passwords Manager Application"<<std::endl;
 cout<<"Copyright (c) 2014 Tondeur hervé\nhttp://www.tondeurh.fr"<<std::endl;
@@ -833,6 +907,8 @@ cmd=(value.compare("COPY")==0)?14:cmd;
 cmd=(value.compare("CP")==0)?14:cmd;
 cmd=(value.compare("DUPLICATE")==0)?15:cmd;
 cmd=(value.compare("DUP")==0)?15:cmd;
+cmd=(value.compare("LISTCONT")==0)?16:cmd;
+cmd=(value.compare("LC")==0)?16:cmd;
 
 
 switch (cmd){
@@ -849,8 +925,10 @@ case 2: //help help
 		cout<<"Syntax : help <cmd>\n"<<std::endl;
 		normal_color();
 		cout<<"=>Show details of a help command.\n<cmd> can take one of this values following :\n"<<std::endl;
-		cout<<"list(ls)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)\tduplicate(dup)"<<std::endl;
-		cout<<"purge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)\thelp\thello\n"<<std::endl;
+		cout<<"list(ls)\tlistcont(lc)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)"<<std::endl;
+		cout<<"duplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)"<<std::endl;
+		cout<<"help\thello\n"<<std::endl;
+
 		cout<<"=>If <cmd> is empty, show general help.\n"<<std::endl;
 		break;
 case 3: //help list
@@ -948,11 +1026,20 @@ case 15: //help duplicate
 		normal_color();
 		cout<<"=>Duplicate an entry and let you to modify it.\nIf id is not set, 0 is assume.\n"<<std::endl;
 		break;
+case 16: //help list CONT
+		cout<<"Commands help\n============================"<<std::endl;
+		color(color_help.c_str());
+		cout<<"Syntax : listcont(lc) [container string] \n"<<std::endl;
+		normal_color();
+		cout<<"=>Print the list of credentials.\n[id] point the credential container string to sort, if string is not set, all credentials entries are listed."<<std::endl;
+		cout<<"lc is the short command to call list\n"<<endl;
+		break;
 default: //general help
 	cout<<"=================================="<<std::endl;
 	cout<<"Commands list\n"<<std::endl;
-	cout<<"list(ls)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)\tduplicate(dup)"<<std::endl;
-	cout<<"purge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)\thelp\thello\n"<<std::endl;
+	cout<<"list(ls)\tlistcont(lc)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)"<<std::endl;
+	cout<<"duplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)"<<std::endl;
+	cout<<"help\thello\n"<<std::endl;
 	cout<<"=>To get details on a command use : \nhelp <cmd>, where cmd is the name of a command.\n"<<std::endl;
 }
 }//end function hello
@@ -1016,6 +1103,9 @@ void Console::run_cmd(int cmdi,string value){
 			break;
 	case 15:
 			duplicate_entry(std::atoi(value.c_str()));
+			break;
+	case 16:
+			listcont_entry(value.c_str());
 			break;
 	default:
 			cout<<"Unknow command (type help)!"<<std::endl;
@@ -1126,6 +1216,9 @@ cmd=(cmdl.compare("COPY")==0)?14:cmd;
 cmd=(cmdl.compare("CP")==0)?14:cmd;
 cmd=(cmdl.compare("DUPLICATE")==0)?15:cmd;
 cmd=(cmdl.compare("DUP")==0)?15:cmd;
+cmd=(cmdl.compare("LISTCONT")==0)?16:cmd;
+cmd=(cmdl.compare("LC")==0)?16:cmd;
+
 
 run_cmd(cmd,value);
 }

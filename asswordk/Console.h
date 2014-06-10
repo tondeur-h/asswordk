@@ -36,9 +36,9 @@ struct struct_entry {
 	std::string login;
 	std::string password;
 	int pwlenght; //not use
-	std::string url;
-	std::string notes;
-	std::string container; //not use at this time
+	std::string url; //url or computer name
+	std::string notes; //some comments on this credentials
+	std::string container; //Give a container where to sort credentials
 };
 
 /*!
@@ -64,6 +64,7 @@ public:
 	std::string generate_password(long int size);//generate a password with a specific size
 	void new_entry(); //command new
 	void list_entry(unsigned int id); //command list
+	void listcont_entry(std::string ctn); //command list
 	void modify_entry(int id); //command modify
 	void delete_entry(int id); //command delete
 	void purge(); //command purge

@@ -1,5 +1,5 @@
-asswordk Version 0.2-5
-======================
+asswordk Version 0.3
+====================
 
 Glad, for your interest in the "asswordk" application, asswordk is a passwords manager, that is able to store
 in a security manner all your passwords and display them from a flexible console command line interface.
@@ -8,7 +8,7 @@ This application is not made to hold several thousand accounts, but can make ava
 a small number of accounts (maximum a few hundreds).
 
 asswordk makes available a certain number of commands to store an account (new), amend an account (modify), 
-delete an account (delete), list all accounts (list), display the content of a account (print), 
+delete an account (delete), list all accounts (list & listcont), display the content of a account (print), 
 purge the accounts database (purge), search a credential in the list (search).
 
 duplicate an entry, the faster way to enter multiple accounts for a unique url or computer(duplicate). 
@@ -93,8 +93,11 @@ help command follow by a command keyword, to have specific help on it.
 
 "new" or "add" command, allows you to create a new account, an account need (login,password,url or machine name, notes for your mind).
 
-"list" or "ls" command, allows you to listing all credentials there were in you database, just see you [id] login@url, not the password,
+"list" or "ls" command, allows you to list all credentials in you database, just let see you [id] login@url, not the password,
 the id number is very important, is usefull for some other command like print, delete etc...
+
+"listcont" or "lc" command, allows you to list all credentials in you database by filtering the list with containers type, 
+just let see you [id] login@url, not the password, the id number is very important, is usefull for some other command like print, delete etc...
 
 "print" or "p" command, allows you to printing on the screen all informations from a entry in your credrentials, quickly note this
 informations, because this informations will be cleaning from screen in five seconds. you must point to the id you want 

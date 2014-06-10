@@ -18,6 +18,7 @@ login= login user (string)
 password= crypt(blowfish) (string)
 url= (string)
 notes= (string)
+container= (string)
 ...
 #repeated  as many time as needed
 [END]

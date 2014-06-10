@@ -32,7 +32,7 @@ namespace pawk {
  *class define for reading config file
  *this class used libconfig++ for this purpose
  */
-const std::string VERSION="0.2";
+const std::string VERSION="0.2+";
 const std::string APPLICATION="asswordk";
 
 class configawk {

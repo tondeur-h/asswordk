@@ -20,6 +20,7 @@
 
 #include "configawk.h"
 #include <iostream>
+#include <libintl.h>
 
 namespace pawk {
 
@@ -55,12 +56,12 @@ cfg.readFile(path.c_str());
 } //exception for IO error
 catch(const libconfig::FileIOException &fioex)
 {
-std::cerr<<"No config file found...Use default values!"<<std::endl;
+std::cerr<<gettext("No config file found...Use default values!")<<std::endl;
 return false;
 } //exception for parse error
 catch(const libconfig::ParseException &pex)
 {
-std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()<< " - " << pex.getError() << std::endl;
+std::cerr << gettext("Parse error at ") << pex.getFile() << ":" << pex.getLine()<< " - " << pex.getError() << std::endl;
 return false;
 }
 //all is ok
@@ -89,7 +90,7 @@ bool configawk::verify_version(){
 	  }//exception handler...
 	  catch(const libconfig::SettingNotFoundException &nfex)
 	  {
-	    std::cerr << "No 'magic word' setting in configuration file." << std::endl;
+	    std::cerr << gettext("No 'magic word' setting in configuration file.") << std::endl;
 		  return false;
 	  }
 return true;

@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <libintl.h>
 
 
 namespace pawk {

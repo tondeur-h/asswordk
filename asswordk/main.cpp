@@ -21,6 +21,9 @@
 
 #include <string>
 #include "Console.h"
+#include <libintl.h>
+#include <locale.h>
+
 
 //declare console loop
 pawk::Console* cons;
@@ -37,6 +40,11 @@ pawk::Console* cons;
  * @return
  */
 int main (int argc, char* argv[]){
+
+setlocale( LC_ALL, "" );
+bindtextdomain( "asswordk", "/usr/share/locale" );
+textdomain( "asswordk" );
+
 
 if (argc>1) {/*futur command line options not implemented a this time*/}
 

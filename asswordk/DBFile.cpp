@@ -176,7 +176,7 @@ void DBFile::writeAll(std::vector<pawk::struct_entry>* v){
 		*dbfile<<"password="<<v->at(it).password<<"\n";
 		*dbfile<<"url="<<v->at(it).url<<"\n";
 		*dbfile<<"notes="<<v->at(it).notes<<"\n";
-		*dbfile<<"container"<<v->at(it).container<<"\n";
+		*dbfile<<"container="<<v->at(it).container<<"\n";
 	}
 *dbfile<<"[END]";
 }

@@ -66,6 +66,7 @@ public:
 	void new_entry(); //command new
 	void list_entry(unsigned int id); //command list
 	void listcont_entry(std::string ctn); //command list
+	void listcat_entry(); //list category entries
 	void modify_entry(int id); //command modify
 	void delete_entry(int id); //command delete
 	void purge(); //command purge

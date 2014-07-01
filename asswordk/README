@@ -1,4 +1,4 @@
-asswordk Version 0.3
+asswordk Version 0.4
 ====================
 
 Glad, for your interest in the "asswordk" application, asswordk is a passwords manager, that is able to store
@@ -25,7 +25,7 @@ get help on a specific function.
     ============
 
 you can download the binary debian package at this url http://tondeurh.fr/software/asswordk-0.2_i386.deb
-depack archive with this command : dpkg -i asswordk-0.2_i386.deb
+depack archive with this command : dpkg -i asswordk-0.4_i386.deb
 
 
 you can get the source code from the git repository (github)  => git://github.com/tondeur-h/asswordk.git 
@@ -98,6 +98,9 @@ the id number is very important, is usefull for some other command like print, d
 
 "listcont" or "lc" command, allows you to list all credentials in you database by filtering the list with containers type, 
 just let see you [id] login@url, not the password, the id number is very important, is usefull for some other command like print, delete etc...
+
+"listcat" or "la" command, allow you ti list all containers in your database, it's usefull for knowing the word to pass in parameter
+for listcont or lc function.
 
 "print" or "p" command, allows you to printing on the screen all informations from a entry in your credrentials, quickly note this
 informations, because this informations will be cleaning from screen in five seconds. you must point to the id you want 

@@ -526,6 +526,45 @@ if (entries->size()==0){
 
 
 /*!
+ * function to list all the containers from db,
+ * just show containers list
+ */
+void Console::listcat_entry(){
+string cont;
+bool find;
+
+//Create temporary Vector for
+std::vector<std::string>* contains;
+contains=new std::vector<std::string>();
+
+//Reading loop of entries
+for (int lid=0;lid<entries->size();lid++){
+	//read container from entry
+	cont=entries->at(lid).container;
+		//compare it to container
+		find=false;
+		for (int lic=0;lic<contains->size();lic++){
+		if (contains->at(lic).compare(cont)==0) {find=true;}
+		}
+		//if find==false insert into contains
+		if (find==false) {contains->push_back(cont);}
+}
+
+std::color(color_list.c_str());
+for (int lic=0;lic<contains->size();lic++){
+	cout<<contains->at(lic)<<endl;
+}
+std::normal_color();
+cout<<gettext("You can use one of this container word(s) with the listcont(lc) command.")<<endl<<endl;
+//Delete vector container....
+delete contains;
+
+} //end listcat_entry function
+
+
+
+
+/*!
  * duplicate an entry and get to modify it...
  * @param id
  */
@@ -857,7 +896,7 @@ else
 void Console::hello(){
 std::clrscr();
 color(color_hello.c_str());
-cout<<"asswordk version 0.3"<<endl;
+cout<<"asswordk version 0.4"<<endl;
 normal_color();
 
 cout<<gettext("Passwords Manager Application")<<endl;
@@ -912,7 +951,8 @@ cmd=(value.compare("DUPLICATE")==0)?15:cmd;
 cmd=(value.compare("DUP")==0)?15:cmd;
 cmd=(value.compare("LISTCONT")==0)?16:cmd;
 cmd=(value.compare("LC")==0)?16:cmd;
-
+cmd=(value.compare("LISTCAT")==0)?17:cmd;
+cmd=(value.compare("LA")==0)?17:cmd;
 
 switch (cmd){
 case 1://help quit
@@ -929,9 +969,9 @@ case 2: //help help
 		normal_color();
 		cout<<"=>"<<gettext("Show details of a help command.")<<endl;
 		cout<<gettext("<cmd> can take one of this values following :")<<endl<<endl;
-		cout<<"list(ls)\tlistcont(lc)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)"<<endl;
-		cout<<"duplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)"<<endl;
-		cout<<"help\thello"<<endl<<endl;
+		cout<<"list(ls)\tlistcont(lc)\tlistcat(la)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)"<<endl;
+		cout<<"password(pw)\tduplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)"<<endl;
+		cout<<"quit(exit)\thelp(help)\thello(help)"<<endl<<endl;
 
 		cout<<"=>"<<gettext("If <cmd> is empty, show general help.")<<endl<<endl;
 		break;
@@ -1052,14 +1092,24 @@ case 16: //help list CONT
 		normal_color();
 		cout<<"=>"<<gettext("Print the list of credentials.")<<endl;
 		cout<<gettext("[id] point the credential container string to sort, if string is not set, all credentials entries are listed.")<<endl;
-		cout<<gettext("lc is the short command to call list")<<endl<<endl;
+		cout<<gettext("lc is the short command to call listcont")<<endl<<endl;
 		break;
+case 17: //help list cat
+		cout<<gettext("Commands help")<<endl<<"============================"<<endl;
+		color(color_help.c_str());
+		cout<<gettext("Syntax")<<" : listcat(la)"<<endl<<endl;
+		normal_color();
+		cout<<"=>"<<gettext("Print the list of containers.")<<endl;
+		cout<<gettext("No options needed.")<<endl;
+		cout<<gettext("la is the short command to call listcat")<<endl<<endl;
+		break;
+
 default: //general help
 	cout<<"=================================="<<endl;
 	cout<<gettext("Commands list")<<endl<<endl;
-	cout<<"list(ls)\tlistcont(lc)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)\tpassword(pw)"<<endl;
-	cout<<"duplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)\tquit(exit)"<<endl;
-	cout<<"help\thello"<<endl<<endl;
+	cout<<"list(ls)\tlistcont(lc)\tlistcat(la)\tnew(add)\tmodify(mod)\tdelete(del)\tprint(p)"<<endl;
+	cout<<"password(pw)\tduplicate(dup)\tpurge(pg)\tsearch(sh)\tbrowse(br)\tcopy(cp)\tclear(clr)"<<endl;
+	cout<<"quit(exit)\thelp(help)\thello(hello)"<<endl<<endl;
 	cout<<"=>"<<gettext("To get details on a command use :")<<endl;
 	cout<<gettext("help <cmd>, where cmd is the name of a command.")<<endl<<endl;
 }
@@ -1127,6 +1177,9 @@ void Console::run_cmd(int cmdi,string value){
 			break;
 	case 16:
 			listcont_entry(value.c_str());
+			break;
+	case 17:
+				listcat_entry();
 			break;
 	default:
 			cout<<gettext("Unknow command (type help)!")<<endl;
@@ -1239,6 +1292,8 @@ cmd=(cmdl.compare("DUPLICATE")==0)?15:cmd;
 cmd=(cmdl.compare("DUP")==0)?15:cmd;
 cmd=(cmdl.compare("LISTCONT")==0)?16:cmd;
 cmd=(cmdl.compare("LC")==0)?16:cmd;
+cmd=(cmdl.compare("LISTCAT")==0)?17:cmd;
+cmd=(cmdl.compare("LA")==0)?17:cmd;
 
 
 run_cmd(cmd,value);
